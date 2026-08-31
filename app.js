@@ -2,6 +2,28 @@
 const TEST_IDS = [1, 4, 7, 25]; // Bulbasaur, Charmander, Squirtle, Pikachu
 
 const grid = document.getElementById("grid");
+const status = document.getElementById("status");
+
+function log(line) {
+  if (status) status.textContent += line + "\n";
+}
+
+// If this never appears on screen, the <script> tag itself never ran
+// (despite JavaScript being enabled) — points at something intercepting
+// or stripping the script before it executes.
+log("Script loaded ✓");
+
+// Wraps a promise so a silently-hanging request (no error, no response —
+// e.g. a network-level block that just drops the connection) shows up
+// after a few seconds instead of leaving the page looking frozen forever.
+function withTimeout(promise, ms, label) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) =>
+      setTimeout(() => reject(new Error(`Timed out after ${ms / 1000}s: ${label}`)), ms)
+    ),
+  ]);
+}
 
 function spriteUrl(id) {
   return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
@@ -26,8 +48,15 @@ function speak(name) {
 }
 
 async function fetchPokemon(id) {
-  const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+  log(`Fetching #${id}...`);
+  const response = await withTimeout(
+    fetch(`https://pokeapi.co/api/v2/pokemon/${id}`),
+    8000,
+    `fetch #${id}`
+  );
+  log(`Got response for #${id}: HTTP ${response.status}`);
   const data = await response.json();
+  log(`Parsed JSON for #${id}: ${data.name}`);
   return { id, name: displayName(data.name) };
 }
 
@@ -44,19 +73,18 @@ function renderCard(pokemon) {
 }
 
 async function init() {
-  try {
-    const pokemonList = await Promise.all(TEST_IDS.map(fetchPokemon));
-    pokemonList.forEach(renderCard);
-  } catch (err) {
-    // Surface the real error on-screen instead of a silently empty grid —
-    // needed to diagnose why this works on some devices but not others.
-    console.error("Pokedex failed to load:", err);
-    grid.innerHTML = `
-      <p style="color:#c0392b; font-size:18px; max-width:500px;">
-        Something went wrong loading the Pokédex:<br>
-        <strong>${err.name}</strong>: ${err.message}
-      </p>`;
-  }
+  log("init() started");
+  const results = await Promise.allSettled(TEST_IDS.map(fetchPokemon));
+
+  results.forEach((result, i) => {
+    if (result.status === "fulfilled") {
+      renderCard(result.value);
+    } else {
+      log(`FAILED #${TEST_IDS[i]}: ${result.reason.name}: ${result.reason.message}`);
+    }
+  });
+
+  log("init() finished");
 }
 
-init();
+init().catch(err => log(`init() threw: ${err.name}: ${err.message}`));
