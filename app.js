@@ -44,8 +44,19 @@ function renderCard(pokemon) {
 }
 
 async function init() {
-  const pokemonList = await Promise.all(TEST_IDS.map(fetchPokemon));
-  pokemonList.forEach(renderCard);
+  try {
+    const pokemonList = await Promise.all(TEST_IDS.map(fetchPokemon));
+    pokemonList.forEach(renderCard);
+  } catch (err) {
+    // Surface the real error on-screen instead of a silently empty grid —
+    // needed to diagnose why this works on some devices but not others.
+    console.error("Pokedex failed to load:", err);
+    grid.innerHTML = `
+      <p style="color:#c0392b; font-size:18px; max-width:500px;">
+        Something went wrong loading the Pokédex:<br>
+        <strong>${err.name}</strong>: ${err.message}
+      </p>`;
+  }
 }
 
 init();
