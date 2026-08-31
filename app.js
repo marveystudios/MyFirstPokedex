@@ -2,10 +2,14 @@
 const TEST_IDS = [1, 4, 7, 25]; // Bulbasaur, Charmander, Squirtle, Pikachu
 
 const grid = document.getElementById("grid");
-const status = document.getElementById("status");
+// NOTE: intentionally not named `status` — that's a legacy reserved
+// property on `window` (window.status), and declaring a top-level
+// const/let named `status` can throw a SyntaxError that silently kills
+// the entire script before anything else runs.
+const statusBox = document.getElementById("status");
 
 function log(line) {
-  if (status) status.textContent += line + "\n";
+  if (statusBox) statusBox.textContent += line + "\n";
 }
 
 // If this never appears on screen, the <script> tag itself never ran
