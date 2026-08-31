@@ -4,23 +4,38 @@
 
 body {
   margin: 0;
-  padding: 24px;
+  padding: 0 24px 32px;
   font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
   background: #f4f6fb;
   -webkit-tap-highlight-color: transparent;
 }
 
-h1 {
+.app-header {
   text-align: center;
+  padding: 20px 0 8px;
+}
+
+.app-header h1 {
   font-size: 28px;
   color: #2b2b40;
+  margin: 0;
 }
+
+.error-message {
+  max-width: 500px;
+  margin: 40px auto;
+  text-align: center;
+  font-size: 18px;
+  color: #c0392b;
+}
+
+/* --- Grid view --- */
 
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 20px;
-  max-width: 900px;
+  max-width: 1000px;
   margin: 0 auto;
 }
 
@@ -33,6 +48,11 @@ h1 {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.card-tap-area {
+  cursor: pointer;
+  width: 100%;
 }
 
 .card img {
@@ -62,4 +82,90 @@ h1 {
 .speak-button:active {
   transform: translateY(2px);
   box-shadow: 0 1px 0 #d9a800;
+}
+
+.speak-button.large {
+  width: 96px;
+  height: 96px;
+  font-size: 40px;
+}
+
+/* --- Detail view --- */
+
+.back-button {
+  display: block;
+  margin: 16px auto;
+  border: none;
+  background: #fff;
+  color: #2b2b40;
+  font-size: 18px;
+  font-weight: 600;
+  padding: 12px 20px;
+  border-radius: 14px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+.back-button:active {
+  transform: translateY(1px);
+}
+
+.detail {
+  max-width: 500px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 24px;
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.detail-image {
+  width: 220px;
+  height: 220px;
+  object-fit: contain;
+}
+
+.detail-name {
+  font-size: 32px;
+  font-weight: 800;
+  color: #2b2b40;
+  margin: 8px 0 16px;
+}
+
+.evo-heading {
+  font-size: 18px;
+  color: #6b6b80;
+  margin: 24px 0 12px;
+}
+
+.evo-row {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.mini-card {
+  cursor: pointer;
+  background: #f4f6fb;
+  border-radius: 16px;
+  padding: 10px;
+  width: 100px;
+}
+
+.mini-card img {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+}
+
+.mini-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2b2b40;
+  margin-top: 4px;
+}
+
+.mini-card:active {
+  transform: translateY(1px);
 }
