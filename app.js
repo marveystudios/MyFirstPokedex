@@ -74,6 +74,7 @@ function renderGrid(list) {
       <button class="speak-button" aria-label="Speak ${pokemon.name}">🔊</button>
     `;
     card.querySelector(".card-tap-area").addEventListener("click", () => {
+      gridScrollY = window.scrollY;
       location.hash = `#/pokemon/${pokemon.id}`;
     });
     card.querySelector(".speak-button").addEventListener("click", event => {
@@ -133,15 +134,19 @@ function renderDetail(id, list) {
 }
 
 let pokemonList = [];
+let gridScrollY = 0;
 
 function route() {
   const match = location.hash.match(/^#\/pokemon\/(\d+)$/);
   if (match) {
     renderDetail(parseInt(match[1], 10), pokemonList);
+    window.scrollTo(0, 0);
   } else {
     renderGrid(pokemonList);
+    // Restore the scroll position he was at before tapping into a Pokémon,
+    // instead of always dropping him back at the top of the list.
+    window.scrollTo(0, gridScrollY);
   }
-  window.scrollTo(0, 0);
 }
 
 async function init() {
