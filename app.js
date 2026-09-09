@@ -145,10 +145,9 @@ function typeRowHtml(id) {
       ${types.map(name => {
         const type = TYPE_INFO[name];
         return `
-        <button class="type-badge" style="background:${type.color}"
-                data-speak="${type.label} type" aria-label="${type.label} type">
-          <img src="${typeIconUrl(name)}" alt="">
-          <span>${type.label}</span>
+        <button class="type-badge" data-speak="${type.label} type"
+                aria-label="${type.label} type">
+          <img src="${typeIconUrl(name)}" alt="${type.label}">
         </button>`;
       }).join("")}
     </div>`;
@@ -170,6 +169,26 @@ function moveSectionHtml(id) {
     <button class="move-button" id="moveBtn" style="background: ${color}">
       <span>${move.name}</span> <span class="move-play">\u25b6</span>
     </button>`;
+}
+
+function episodeSectionHtml(id) {
+  const ep = EPISODES[id];
+  if (!ep) return "";
+  // The two sources aren't equally strong, so the heading says which it is
+  // rather than promising an episode about a Pokémon that only walks past.
+  const heading = ep.src === "title" ? "Watch the episode" : "First seen in";
+  return `
+    <h2 class="evo-heading">${heading}</h2>
+    <div class="episode">
+      <div class="episode-frame">
+        <iframe
+          src="https://www.youtube-nocookie.com/embed/${ep.vid}?rel=0&amp;modestbranding=1&amp;playsinline=1"
+          title="${ep.title}" loading="lazy" allowfullscreen
+          allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"
+          referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      </div>
+      <div class="episode-title">${ep.title}</div>
+    </div>`;
 }
 
 function renderDetail(id, list) {
@@ -205,6 +224,8 @@ function renderDetail(id, list) {
         <h2 class="evo-heading">Evolves into</h2>
         <div class="evo-row">${evos.map(miniCardHtml).join("")}</div>
       ` : ""}
+
+      ${episodeSectionHtml(id)}
     </div>
   `;
 

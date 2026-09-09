@@ -181,23 +181,22 @@ body {
 }
 
 .type-badge {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  /* The icon is a 200x44 badge that already carries its own colour and the
+     type name, so there's no wrapper colour and no text label beside it —
+     that only squeezed the image. */
   border: none;
-  border-radius: 999px;
-  padding: 10px 20px 10px 14px;
-  color: #fff;
-  font-size: 20px;
-  font-weight: 700;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
-  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.18);
+  background: none;
+  padding: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  line-height: 0;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.18);
 }
 
 .type-badge img {
-  width: 28px;
-  height: 28px;
-  object-fit: contain;
+  display: block;
+  width: 150px;
+  height: auto;
 }
 
 .type-badge:active {
@@ -457,4 +456,38 @@ body {
     animation: none;
   }
   .move-stage .fx { opacity: 1; }
+}
+
+/* --- Anime episode ---
+   A real embedded player rather than a thumbnail: there's always an adult in
+   the room, and a 22-minute episode isn't something he'll sit through to the
+   end-screen anyway. nocookie + rel=0 keeps recommendations to this channel. */
+
+.episode {
+  margin-top: 12px;
+}
+
+.episode-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #000;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+}
+
+.episode-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.episode-title {
+  margin-top: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #6b6b80;
 }

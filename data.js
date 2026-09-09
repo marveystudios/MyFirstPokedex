@@ -425,3 +425,160 @@ const SIGNATURE_MOVES = {
   150: { name: "Psychic", type: "psychic", fx: "psybeam" },  // mewtwo
   151: { name: "Psychic", type: "psychic", fx: "psybeam" },  // mew
 };
+
+
+// --- Anime episodes ------------------------------------------------------
+// Full episodes from the official Pokémon TV playlist of seasons 1-2, mapped
+// to the Pokémon each one features. 137 of the 151 have one.
+//
+// Two sources, and they are NOT equal quality:
+// - "title": the official episode title names this Pokémon, so the episode is
+//   genuinely about it. The title is its own evidence — no need to watch it to
+//   know. 31 of these.
+// - "debut": Bulbapedia lists this as the episode where the Pokémon first
+//   appears in the anime. Often that's a background cameo rather than a
+//   starring role (Venusaur "debuts" in the Butterfree episode), so the page
+//   words these as "first seen in" rather than promising an episode about it.
+//   106 of these.
+//
+// Episode numbering: the playlist's Season 1 Ep N is Bulbapedia's EP00N, and
+// Season 2 Ep N is EP0(52+N) — verified against Bulbapedia at both ends.
+const EPISODES = {
+  1: { vid: "nfpsYGAGzF0", title: "Bulbasaur and the Hidden Village", src: "title" },  // bulbasaur
+  2: { vid: "okJhrQSg7uU", title: "Who Gets to Keep Togepi?", src: "debut" },  // ivysaur
+  3: { vid: "T23nJU-KwZo", title: "Bye-Bye Butterfree", src: "debut" },  // venusaur
+  4: { vid: "JhhupHQlal8", title: "Charmander—the Stray Pokémon", src: "title" },  // charmander
+  5: { vid: "pCCsYuiAIQ8", title: "Attack of the Prehistoric Pokémon", src: "debut" },  // charmeleon
+  6: { vid: "R9SQMo70NY8", title: "Charizard Chills", src: "title" },  // charizard
+  7: { vid: "1TlOcjJodHw", title: "Here Comes the Squirtle Squad", src: "title" },  // squirtle
+  8: { vid: "VQFtkKgOVGk", title: "The Battle of the Badge", src: "debut" },  // wartortle
+  9: { vid: "mDGVc3Sc_H4", title: "Beach Blank-out Blastoise", src: "title" },  // blastoise
+  10: { vid: "h6LFdBPjbf4", title: "Pokémon Emergency", src: "debut" },  // caterpie
+  11: { vid: "ObtS79k2NM4", title: "Ash Catches a Pokémon", src: "debut" },  // metapod
+  12: { vid: "T23nJU-KwZo", title: "Bye-Bye Butterfree", src: "title" },  // butterfree
+  13: { vid: "PEUL-1_zGWI", title: "Challenge of the Samurai", src: "debut" },  // weedle
+  14: { vid: "PEUL-1_zGWI", title: "Challenge of the Samurai", src: "debut" },  // kakuna
+  15: { vid: "ObtS79k2NM4", title: "Ash Catches a Pokémon", src: "debut" },  // beedrill
+  16: { vid: "z3hMX65Khtg", title: "Pokémon - I Choose You!", src: "debut" },  // pidgey
+  17: { vid: "ObtS79k2NM4", title: "Ash Catches a Pokémon", src: "debut" },  // pidgeotto
+  18: { vid: "dJgDmrra3kM", title: "The School of Hard Knocks", src: "debut" },  // pidgeot
+  19: { vid: "z3hMX65Khtg", title: "Pokémon - I Choose You!", src: "debut" },  // rattata
+  20: { vid: "9wAKxOavTnw", title: "Battle aboard the St. Anne", src: "debut" },  // raticate
+  21: { vid: "z3hMX65Khtg", title: "Pokémon - I Choose You!", src: "debut" },  // spearow
+  22: { vid: "z3hMX65Khtg", title: "Pokémon - I Choose You!", src: "debut" },  // fearow
+  23: { vid: "h6LFdBPjbf4", title: "Pokémon Emergency", src: "debut" },  // ekans
+  24: { vid: "XpwNBGB6Fuo", title: "The Ninja Poké-Showdown", src: "debut" },  // arbok
+  25: { vid: "z3hMX65Khtg", title: "Pokémon - I Choose You!", src: "title" },  // pikachu
+  26: { vid: "Cd-3_QOIjgU", title: "Electric Shock Showdown", src: "debut" },  // raichu
+  27: { vid: "z3hMX65Khtg", title: "Pokémon - I Choose You!", src: "debut" },  // sandshrew
+  28: { vid: "1PfJMmwI6b4", title: "The Kangaskhan Kid", src: "debut" },  // sandslash
+  30: { vid: "1PfJMmwI6b4", title: "The Kangaskhan Kid", src: "debut" },  // nidorina
+  33: { vid: "z3hMX65Khtg", title: "Pokémon - I Choose You!", src: "debut" },  // nidorino
+  34: { vid: "okJhrQSg7uU", title: "Who Gets to Keep Togepi?", src: "debut" },  // nidoking
+  35: { vid: "iaxkOJZxzQM", title: "Clefairy and the Moon Stone", src: "title" },  // clefairy
+  36: { vid: "iaxkOJZxzQM", title: "Clefairy and the Moon Stone", src: "debut" },  // clefable
+  37: { vid: "_LhB0LIQlQ0", title: "The Punchy Pokémon", src: "debut" },  // vulpix
+  38: { vid: "tuTr_cRGKds", title: "Wake Up Snorlax!", src: "debut" },  // ninetales
+  39: { vid: "Ss13Pnq6XII", title: "The Song of Jigglypuff", src: "title" },  // jigglypuff
+  41: { vid: "iaxkOJZxzQM", title: "Clefairy and the Moon Stone", src: "debut" },  // zubat
+  42: { vid: "RYdXQlBjjPI", title: "The Flame Pokémon-athon!", src: "debut" },  // golbat
+  43: { vid: "nfpsYGAGzF0", title: "Bulbasaur and the Hidden Village", src: "debut" },  // oddish
+  44: { vid: "PsrT-DG4M4w", title: "Make Room for Gloom!", src: "title" },  // gloom
+  45: { vid: "XwpbJK-WE8Q", title: "Hypno's Naptime", src: "debut" },  // vileplume
+  46: { vid: "J2MF6t_N8vo", title: "The Problem with Paras", src: "title" },  // paras
+  47: { vid: "XTaSlC_OmV4", title: "A Chansey Operation", src: "debut" },  // parasect
+  48: { vid: "_LhB0LIQlQ0", title: "The Punchy Pokémon", src: "debut" },  // venonat
+  49: { vid: "RYdXQlBjjPI", title: "The Flame Pokémon-athon!", src: "debut" },  // venomoth
+  50: { vid: "mRR7mbV0u4U", title: "Dig Those Diglett!", src: "title" },  // diglett
+  51: { vid: "XpwNBGB6Fuo", title: "The Ninja Poké-Showdown", src: "debut" },  // dugtrio
+  52: { vid: "IcbL2_S2I1w", title: "Go West Young Meowth", src: "title" },  // meowth
+  53: { vid: "9wAKxOavTnw", title: "Battle aboard the St. Anne", src: "debut" },  // persian
+  54: { vid: "gzQ9-U8C-5U", title: "Bye, Bye Psyduck", src: "title" },  // psyduck
+  56: { vid: "z3hMX65Khtg", title: "Pokémon - I Choose You!", src: "debut" },  // mankey
+  57: { vid: "9aLD8SGoPIc", title: "Primeape Goes Bananas", src: "title" },  // primeape
+  58: { vid: "mRR7mbV0u4U", title: "Dig Those Diglett!", src: "debut" },  // growlithe
+  59: { vid: "SaMuL0NZhCU", title: "Showdown at the Po-ké Corral", src: "debut" },  // arcanine
+  60: { vid: "rrQmjrZedac", title: "Pokémon Scent-sation!", src: "debut" },  // poliwag
+  61: { vid: "rrQmjrZedac", title: "Pokémon Scent-sation!", src: "debut" },  // poliwhirl
+  62: { vid: "f8mWMqLO88A", title: "Sparks Fly for Magnemite", src: "debut" },  // poliwrath
+  63: { vid: "TYhdezzyqPo", title: "Abra and the Psychic Showdown", src: "title" },  // abra
+  64: { vid: "9IymXcXl4fk", title: "Haunter vs. Kadabra", src: "title" },  // kadabra
+  66: { vid: "f8mWMqLO88A", title: "Sparks Fly for Magnemite", src: "debut" },  // machop
+  67: { vid: "f8mWMqLO88A", title: "Sparks Fly for Magnemite", src: "debut" },  // machoke
+  68: { vid: "f8mWMqLO88A", title: "Sparks Fly for Magnemite", src: "debut" },  // machamp
+  69: { vid: "rrQmjrZedac", title: "Pokémon Scent-sation!", src: "debut" },  // bellsprout
+  70: { vid: "dJgDmrra3kM", title: "The School of Hard Knocks", src: "debut" },  // weepinbell
+  71: { vid: "XwpbJK-WE8Q", title: "Hypno's Naptime", src: "debut" },  // victreebel
+  72: { vid: "6uNYmqvF24k", title: "Tentacool & Tentacruel", src: "title" },  // tentacool
+  73: { vid: "6uNYmqvF24k", title: "Tentacool & Tentacruel", src: "title" },  // tentacruel
+  74: { vid: "COr4zRFX0Gw", title: "Showdown in Pewter City", src: "debut" },  // geodude
+  75: { vid: "dJgDmrra3kM", title: "The School of Hard Knocks", src: "debut" },  // graveler
+  76: { vid: "lSZ172BJoaE", title: "Pikachu's Goodbye", src: "debut" },  // golem
+  77: { vid: "1PfJMmwI6b4", title: "The Kangaskhan Kid", src: "debut" },  // ponyta
+  78: { vid: "1PfJMmwI6b4", title: "The Kangaskhan Kid", src: "debut" },  // rapidash
+  79: { vid: "R-GNznqs7cI", title: "Island of the Giant Pokémon", src: "debut" },  // slowpoke
+  80: { vid: "R-GNznqs7cI", title: "Island of the Giant Pokémon", src: "debut" },  // slowbro
+  81: { vid: "f8mWMqLO88A", title: "Sparks Fly for Magnemite", src: "title" },  // magnemite
+  82: { vid: "mRR7mbV0u4U", title: "Dig Those Diglett!", src: "debut" },  // magneton
+  84: { vid: "be4-hKKU9gQ", title: "The Pi-Kahuna", src: "debut" },  // doduo
+  85: { vid: "z3hMX65Khtg", title: "Pokémon - I Choose You!", src: "debut" },  // dodrio
+  86: { vid: "RcBw50wD9_o", title: "The Water Flowers of Cerulean City", src: "debut" },  // seel
+  87: { vid: "KH92hzvhv2g", title: "It's Mr. Mime Time", src: "debut" },  // dewgong
+  88: { vid: "XwpbJK-WE8Q", title: "Hypno's Naptime", src: "debut" },  // grimer
+  89: { vid: "mRR7mbV0u4U", title: "Dig Those Diglett!", src: "debut" },  // muk
+  90: { vid: "lSZ172BJoaE", title: "Pikachu's Goodbye", src: "debut" },  // shellder
+  91: { vid: "lSZ172BJoaE", title: "Pikachu's Goodbye", src: "debut" },  // cloyster
+  92: { vid: "T23nJU-KwZo", title: "Bye-Bye Butterfree", src: "debut" },  // gastly
+  93: { vid: "9IymXcXl4fk", title: "Haunter vs. Kadabra", src: "title" },  // haunter
+  94: { vid: "z3hMX65Khtg", title: "Pokémon - I Choose You!", src: "debut" },  // gengar
+  95: { vid: "qdju1COuRvQ", title: "The Crystal Onix", src: "title" },  // onix
+  96: { vid: "lKggkmrv7q4", title: "Pokémon Fashion Flash", src: "debut" },  // drowzee
+  97: { vid: "XwpbJK-WE8Q", title: "Hypno's Naptime", src: "title" },  // hypno
+  98: { vid: "3l1lSNQxJA0", title: "Mystery at the Lighthouse", src: "debut" },  // krabby
+  99: { vid: "3l1lSNQxJA0", title: "Mystery at the Lighthouse", src: "debut" },  // kingler
+  100: { vid: "_LhB0LIQlQ0", title: "The Punchy Pokémon", src: "debut" },  // voltorb
+  101: { vid: "1PfJMmwI6b4", title: "The Kangaskhan Kid", src: "debut" },  // electrode
+  102: { vid: "XwpbJK-WE8Q", title: "Hypno's Naptime", src: "debut" },  // exeggcute
+  103: { vid: "pBXQbh0mtCE", title: "The March of the Exeggutor Squad", src: "title" },  // exeggutor
+  104: { vid: "dJgDmrra3kM", title: "The School of Hard Knocks", src: "debut" },  // cubone
+  105: { vid: "ROUh6KKz9XA", title: "Round One—Begin!", src: "debut" },  // marowak
+  106: { vid: "f8mWMqLO88A", title: "Sparks Fly for Magnemite", src: "debut" },  // hitmonlee
+  107: { vid: "f8mWMqLO88A", title: "Sparks Fly for Magnemite", src: "debut" },  // hitmonchan
+  108: { vid: "uLJCo0ly_Rc", title: "The Breeding Center Secret", src: "debut" },  // lickitung
+  109: { vid: "h6LFdBPjbf4", title: "Pokémon Emergency", src: "debut" },  // koffing
+  110: { vid: "XpwNBGB6Fuo", title: "The Ninja Poké-Showdown", src: "debut" },  // weezing
+  111: { vid: "1PfJMmwI6b4", title: "The Kangaskhan Kid", src: "debut" },  // rhyhorn
+  112: { vid: "dHuwaW3Vlh4", title: "Ditto's Mysterious Mansion", src: "debut" },  // rhydon
+  113: { vid: "XTaSlC_OmV4", title: "A Chansey Operation", src: "title" },  // chansey
+  114: { vid: "XwpbJK-WE8Q", title: "Hypno's Naptime", src: "debut" },  // tangela
+  115: { vid: "1PfJMmwI6b4", title: "The Kangaskhan Kid", src: "title" },  // kangaskhan
+  116: { vid: "boY4QaYhBeM", title: "The Ghost of Maiden's Peak", src: "debut" },  // horsea
+  118: { vid: "h6LFdBPjbf4", title: "Pokémon Emergency", src: "debut" },  // goldeen
+  119: { vid: "KH92hzvhv2g", title: "It's Mr. Mime Time", src: "debut" },  // seaking
+  120: { vid: "iaxkOJZxzQM", title: "Clefairy and the Moon Stone", src: "debut" },  // staryu
+  121: { vid: "RcBw50wD9_o", title: "The Water Flowers of Cerulean City", src: "debut" },  // starmie
+  123: { vid: "Ss13Pnq6XII", title: "The Song of Jigglypuff", src: "debut" },  // scyther
+  125: { vid: "Ss13Pnq6XII", title: "The Song of Jigglypuff", src: "debut" },  // electabuzz
+  126: { vid: "G7EBiaDe_K0", title: "The Misty Mermaid", src: "debut" },  // magmar
+  127: { vid: "PEUL-1_zGWI", title: "Challenge of the Samurai", src: "debut" },  // pinsir
+  128: { vid: "1PfJMmwI6b4", title: "The Kangaskhan Kid", src: "debut" },  // tauros
+  129: { vid: "z3hMX65Khtg", title: "Pokémon - I Choose You!", src: "debut" },  // magikarp
+  130: { vid: "z3hMX65Khtg", title: "Pokémon - I Choose You!", src: "debut" },  // gyarados
+  131: { vid: "_cy6tWoHHVA", title: "The Lost Lapras", src: "title" },  // lapras
+  132: { vid: "dHuwaW3Vlh4", title: "Ditto's Mysterious Mansion", src: "title" },  // ditto
+  133: { vid: "xTmgJ8-HCtI", title: "The Battling Eevee Brothers", src: "title" },  // eevee
+  134: { vid: "pBXQbh0mtCE", title: "The March of the Exeggutor Squad", src: "debut" },  // vaporeon
+  135: { vid: "pBXQbh0mtCE", title: "The March of the Exeggutor Squad", src: "debut" },  // jolteon
+  136: { vid: "pBXQbh0mtCE", title: "The March of the Exeggutor Squad", src: "debut" },  // flareon
+  137: { vid: "tuTr_cRGKds", title: "Wake Up Snorlax!", src: "debut" },  // porygon
+  138: { vid: "wKU_vLdoSwQ", title: "So Near Yet So Farfetch'd", src: "debut" },  // omanyte
+  139: { vid: "wKU_vLdoSwQ", title: "So Near Yet So Farfetch'd", src: "debut" },  // omastar
+  140: { vid: "wKU_vLdoSwQ", title: "So Near Yet So Farfetch'd", src: "debut" },  // kabuto
+  141: { vid: "wKU_vLdoSwQ", title: "So Near Yet So Farfetch'd", src: "debut" },  // kabutops
+  142: { vid: "wKU_vLdoSwQ", title: "So Near Yet So Farfetch'd", src: "debut" },  // aerodactyl
+  143: { vid: "tuTr_cRGKds", title: "Wake Up Snorlax!", src: "title" },  // snorlax
+  146: { vid: "mFp1nN5RSPE", title: "Fire and Ice", src: "debut" },  // moltres
+  147: { vid: "dHuwaW3Vlh4", title: "Ditto's Mysterious Mansion", src: "debut" },  // dratini
+  148: { vid: "dHuwaW3Vlh4", title: "Ditto's Mysterious Mansion", src: "debut" },  // dragonair
+  149: { vid: "bAE1pgjx8Hk", title: "Enter The Dragonite", src: "title" },  // dragonite
+};
