@@ -169,3 +169,292 @@ body {
 .mini-card:active {
   transform: translateY(1px);
 }
+
+/* --- Types --- */
+
+.type-row {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 20px 0 8px;
+}
+
+.type-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 20px 10px 14px;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.18);
+}
+
+.type-badge img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.type-badge:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.18);
+}
+
+/* --- Move stage ---
+   Instead of a video (no source of Pokémon move footage exists), the move is
+   an animated pixel sprite with a Showdown effect image flown across it.
+   The Pokémon sits on the right and fires left, because the sprites face
+   left — so it reads as the Pokémon doing the move, not being hit by it. */
+
+.move-stage {
+  position: relative;
+  height: 240px;
+  margin: 12px 0 16px;
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+  background: radial-gradient(circle at 70% 60%, #ffffff 0%, #eef1f8 60%, #e2e7f3 100%);
+}
+
+.move-sprite {
+  position: absolute;
+  right: 14px;
+  bottom: 16px;
+  width: 176px;
+  height: 176px;
+  object-fit: contain;
+  object-position: bottom;
+  /* The source sprites are 60px wide, so keep the pixels crisp when scaled. */
+  image-rendering: pixelated;
+}
+
+.move-flash {
+  position: absolute;
+  inset: 0;
+  background: var(--move-color);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.fx {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.move-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  border: none;
+  border-radius: 18px;
+  padding: 18px;
+  color: #fff;
+  font-size: 26px;
+  font-weight: 800;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.18);
+}
+
+.move-button:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.18);
+}
+
+.move-play {
+  font-size: 20px;
+  opacity: 0.85;
+}
+
+/* --- Move animations ---
+   14 effect families across 151 Pokémon, so the projectile behaviour is the
+   default and only the odd ones out get their own rule. Sprite lists live in
+   MOVE_FX in app.js; --i staggers them so they don't leave in a clump. */
+
+.move-stage.playing .move-sprite {
+  animation: lunge 1s ease-in-out;
+}
+
+@keyframes lunge {
+  0%, 100% { transform: translateX(0); }
+  20%      { transform: translateX(16px) scale(0.96); }
+  40%      { transform: translateX(-12px); }
+}
+
+/* Default: a projectile streaming out from about mouth height. */
+.fx {
+  right: 150px;
+  bottom: 96px;
+  width: 46px;
+}
+
+.move-stage.playing .fx {
+  animation: stream-left 1.05s ease-out calc(0.2s + var(--i) * 0.14s);
+}
+
+@keyframes stream-left {
+  0%   { opacity: 0; transform: translateX(20px) scale(0.3); }
+  20%  { opacity: 1; transform: translateX(0) scale(0.75); }
+  100% { opacity: 0; transform: translateX(-240px) scale(1.15); }
+}
+
+/* Thunderbolt and friends: a bolt cracks down in front, and the stage flashes. */
+.move-stage[data-fx="bolt"] .fx {
+  top: -10px;
+  left: 22%;
+  right: auto;
+  bottom: auto;
+  width: 78px;
+  transform-origin: top center;
+}
+
+.move-stage[data-fx="bolt"].playing .fx {
+  animation: bolt-strike 1.25s ease-out 0.15s;
+}
+
+.move-stage[data-fx="bolt"].playing .move-flash {
+  animation: bolt-flash 1.25s ease-out 0.15s;
+}
+
+@keyframes bolt-strike {
+  0%   { opacity: 0;   transform: scaleY(0.1); }
+  10%  { opacity: 1;   transform: scaleY(1); }
+  25%  { opacity: 0.1; }
+  40%  { opacity: 1; }
+  70%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes bolt-flash {
+  0%, 100% { opacity: 0; }
+  10%      { opacity: 0.5; }
+  25%      { opacity: 0; }
+  40%      { opacity: 0.35; }
+  60%      { opacity: 0; }
+}
+
+/* Things that tumble rather than fly straight. */
+.move-stage[data-fx="leaves"] .fx,
+.move-stage[data-fx="rocks"] .fx,
+.move-stage[data-fx="bone"] .fx {
+  bottom: 98px;
+  width: 46px;
+}
+
+.move-stage[data-fx="bone"] .fx { width: 54px; }
+
+.move-stage[data-fx="leaves"].playing .fx,
+.move-stage[data-fx="rocks"].playing .fx,
+.move-stage[data-fx="bone"].playing .fx {
+  animation: leaf-spin 1.1s ease-out calc(0.2s + var(--i) * 0.15s);
+}
+
+@keyframes leaf-spin {
+  0%   { opacity: 0; transform: translate(20px, 0) rotate(0deg) scale(0.5); }
+  20%  { opacity: 1; transform: translate(0, -6px) rotate(-120deg) scale(1); }
+  100% { opacity: 0; transform: translate(-240px, 18px) rotate(-720deg) scale(1); }
+}
+
+/* --- Impact ---
+   The move used to fly off the edge and nothing happened, which read as
+   "something drifted past" rather than "this Pokémon hit something".
+   Drawn in CSS rather than with Showdown's impact.png, because mask-image
+   needs CORS headers that play.pokemonshowdown.com doesn't send — the masked
+   version silently rendered nothing at all. */
+
+.impact {
+  position: absolute;
+  left: 34px;
+  bottom: 78px;
+  width: 104px;
+  height: 104px;
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  background: radial-gradient(circle, #fff 0%, var(--move-color) 22%, var(--move-color) 52%, transparent 70%);
+  box-shadow: 0 0 22px 6px var(--move-color);
+}
+
+.move-stage.playing .impact {
+  animation: impact-burst 0.5s ease-out var(--impact-at, 1.05s);
+}
+
+.move-stage.playing {
+  animation: stage-jolt 0.4s ease-out var(--impact-at, 1.05s);
+}
+
+@keyframes impact-burst {
+  0%   { opacity: 0;    transform: scale(0.15); }
+  25%  { opacity: 1;    transform: scale(1); }
+  60%  { opacity: 0.75; transform: scale(1.45); }
+  100% { opacity: 0;    transform: scale(2.1); }
+}
+
+@keyframes stage-jolt {
+  0%, 100% { transform: translate(0, 0); }
+  20%      { transform: translate(-6px, 3px); }
+  45%      { transform: translate(5px, -3px); }
+  70%      { transform: translate(-3px, 2px); }
+}
+
+/* Each family lands at a different moment, so the jolt has to match. */
+.move-stage[data-fx="bolt"]   { --impact-at: 0.42s; }
+.move-stage[data-fx="leaves"],
+.move-stage[data-fx="rocks"],
+.move-stage[data-fx="bone"]   { --impact-at: 1.1s; }
+
+/* Melee: nothing flies, so it connects almost immediately. */
+.move-stage[data-fx="melee"]  { --impact-at: 0.3s; }
+
+.move-stage[data-fx="melee"].playing .move-sprite {
+  animation: lunge-hard 0.9s ease-in-out;
+}
+
+@keyframes lunge-hard {
+  0%, 100% { transform: translateX(0); }
+  18%      { transform: translateX(-46px) scale(1.04); }
+  38%      { transform: translateX(10px); }
+}
+
+/* Status moves (Splash, Sing, Harden, Transform): a pulse around the Pokémon.
+   Nothing is being hit, so there's no burst on the far side and no jolt. */
+.move-stage[data-fx="aura"].playing { animation: none; }
+
+.move-stage[data-fx="aura"] .impact {
+  left: auto;
+  right: 40px;
+  bottom: 34px;
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, transparent 46%, var(--move-color) 62%, transparent 76%);
+  box-shadow: none;
+}
+
+.move-stage[data-fx="aura"].playing .impact {
+  animation: aura-pulse 1.1s ease-out 0.15s;
+}
+
+@keyframes aura-pulse {
+  0%   { opacity: 0;   transform: scale(0.4); }
+  30%  { opacity: 0.9; transform: scale(0.85); }
+  100% { opacity: 0;   transform: scale(1.5); }
+}
+
+/* Kids' device or not, respect the setting if it's on. */
+@media (prefers-reduced-motion: reduce) {
+  .move-stage.playing,
+  .move-stage.playing .move-sprite,
+  .move-stage.playing .fx,
+  .move-stage.playing .move-flash,
+  .move-stage.playing .impact {
+    animation: none;
+  }
+  .move-stage .fx { opacity: 1; }
+}

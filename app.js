@@ -10,6 +10,42 @@ function spriteUrl(id) {
   return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
 }
 
+// Small pixel sprite that already has its own idle animation. Used for the
+// move stage, where the big official artwork would just sit there.
+function animatedSpriteUrl(id) {
+  return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/${id}.gif`;
+}
+
+function typeIconUrl(typeName) {
+  return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-viii/sword-shield/${TYPE_INFO[typeName].iconId}.png`;
+}
+
+// Effect images borrowed from Pokémon Showdown's battle animations — these are
+// the same PNGs its simulator composites. There is no source of Pokémon move
+// *videos* anywhere, so each fx key is instead a CSS animation (in style.css)
+// that flies these sprites across the stage. One animation covers every
+// Pokémon that shares the effect, so ~10 of them will cover all 151.
+const MOVE_FX = {
+  bolt:       ["lightning"],
+  flareball:  ["fireball", "fireball", "fireball"],
+  waterwisp:  ["waterwisp", "waterwisp", "waterwisp"],
+  leaves:     ["leaf1", "leaf2", "leaf1"],
+  rocks:      ["rock1", "rock2", "rock1"],
+  poison:     ["poisonwisp", "poisonwisp", "poisonwisp"],
+  psybeam:    ["mistball", "mistball", "mistball"],
+  ghost:      ["wisp", "wisp", "wisp"],
+  ice:        ["iceball", "icicle", "iceball"],
+  dragonfire: ["bluefireball", "bluefireball", "bluefireball"],
+  beam:       ["shine", "shine", "shine"],
+  bone:       ["bone", "bone"],
+  melee:      [], // physical hit — it lunges and connects, nothing flies
+  aura:       [], // status move (Splash, Sing, Harden) — a pulse, no impact
+};
+
+function fxUrl(name) {
+  return `https://play.pokemonshowdown.com/fx/${name}.png`;
+}
+
 function getDisplayName(id, rawName) {
   if (NAME_OVERRIDES[id]) return NAME_OVERRIDES[id].display;
   return rawName
@@ -31,6 +67,14 @@ function speak(text) {
   utterance.rate = 0.65; // slow, for a 4-year-old learning the word
   utterance.pitch = 1;
   window.speechSynthesis.speak(utterance);
+}
+
+// Restarting a CSS animation means taking the class off, forcing a reflow so
+// the browser notices, then putting it back.
+function playMove(stage) {
+  stage.classList.remove("playing");
+  void stage.offsetWidth;
+  stage.classList.add("playing");
 }
 
 async function loadPokemonList() {
@@ -93,6 +137,41 @@ function miniCardHtml(pokemon) {
     </div>`;
 }
 
+function typeRowHtml(id) {
+  const types = POKEMON_TYPES[id];
+  if (!types) return "";
+  return `
+    <div class="type-row">
+      ${types.map(name => {
+        const type = TYPE_INFO[name];
+        return `
+        <button class="type-badge" style="background:${type.color}"
+                data-speak="${type.label} type" aria-label="${type.label} type">
+          <img src="${typeIconUrl(name)}" alt="">
+          <span>${type.label}</span>
+        </button>`;
+      }).join("")}
+    </div>`;
+}
+
+function moveSectionHtml(id) {
+  const move = SIGNATURE_MOVES[id];
+  if (!move) return "";
+  const color = TYPE_INFO[move.type].color;
+  return `
+    <h2 class="evo-heading">Best move</h2>
+    <div class="move-stage" id="moveStage" data-fx="${move.fx}" style="--move-color: ${color}">
+      <div class="move-flash"></div>
+      <div class="impact"></div>
+      ${MOVE_FX[move.fx].map((sprite, i) =>
+        `<img class="fx" src="${fxUrl(sprite)}" alt="" style="--i: ${i}">`).join("")}
+      <img class="move-sprite" src="${animatedSpriteUrl(id)}" alt="">
+    </div>
+    <button class="move-button" id="moveBtn" style="background: ${color}">
+      <span>${move.name}</span> <span class="move-play">\u25b6</span>
+    </button>`;
+}
+
 function renderDetail(id, list) {
   const pokemon = list.find(p => p.id === id);
 
@@ -114,6 +193,9 @@ function renderDetail(id, list) {
       <div class="detail-name">${pokemon.name}</div>
       <button class="speak-button large" id="detailSpeakBtn" aria-label="Speak ${pokemon.name}">🔊</button>
 
+      ${typeRowHtml(id)}
+      ${moveSectionHtml(id)}
+
       ${prevo ? `
         <h2 class="evo-heading">Evolves from</h2>
         <div class="evo-row">${miniCardHtml(prevo)}</div>
@@ -128,6 +210,22 @@ function renderDetail(id, list) {
 
   document.getElementById("backBtn").addEventListener("click", () => { location.hash = "#/"; });
   document.getElementById("detailSpeakBtn").addEventListener("click", () => speak(pokemon.speech));
+
+  app.querySelectorAll("[data-speak]").forEach(el => {
+    el.addEventListener("click", () => speak(el.dataset.speak));
+  });
+
+  const stage = document.getElementById("moveStage");
+  if (stage) {
+    const move = SIGNATURE_MOVES[id];
+    // Play once on arrival — he can't read the button, so the animation has to
+    // announce itself. Only the deliberate tap speaks, so it doesn't talk over
+    // the Pokémon's name.
+    playMove(stage);
+    const replay = () => { playMove(stage); speak(move.name); };
+    stage.addEventListener("click", replay);
+    document.getElementById("moveBtn").addEventListener("click", replay);
+  }
   app.querySelectorAll(".mini-card").forEach(el => {
     el.addEventListener("click", () => { location.hash = `#/pokemon/${el.dataset.id}`; });
   });
