@@ -491,3 +491,19 @@ body {
   font-weight: 600;
   color: #6b6b80;
 }
+
+/* Dutch is the name he'd know from the show, so it takes the button; English
+   sits under it at a size that doesn't compete. */
+.move-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.15;
+}
+
+.move-name-en {
+  font-size: 15px;
+  font-weight: 600;
+  opacity: 0.75;
+  margin-top: 2px;
+}

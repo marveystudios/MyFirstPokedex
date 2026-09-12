@@ -582,3 +582,101 @@ const EPISODES = {
   148: { vid: "dHuwaW3Vlh4", title: "Ditto's Mysterious Mansion", src: "debut" },  // dragonair
   149: { vid: "bAE1pgjx8Hk", title: "Enter The Dragonite", src: "title" },  // dragonite
 };
+
+
+// --- Dutch move names ----------------------------------------------------
+// He watches the show, not the games, so the Dutch dub's name is the one he'd
+// recognise — shown as the main label with the English underneath.
+//
+// Source: Bulbapedia's "In other languages" table, which is the dub (the games
+// were never localised into Dutch, so PokeAPI has no Dutch at all — its
+// language list has 14 entries and nl isn't one).
+//
+// The dub is uneven. Two are exactly what it said but odd for a small child:
+// "Lijfstraf" (Body Slam) literally means corporal punishment, and "Roede"
+// (Vine Whip) is an archaic word with an anatomical second sense. They're left
+// as the dub had them; put a replacement in NL_OVERRIDES to change one without
+// touching the table below.
+const NL_OVERRIDES = {
+  // "Body Slam": "Lichaamsstoot",
+  // "Vine Whip": "Rankzweep",
+};
+
+const MOVE_NAMES_NL = {
+  "Absorb": "Absorbeer",
+  "Acid": "Zuur",
+  "Aurora Beam": "Aurorastraal",
+  "Blizzard": "Sneeuwstorm",
+  "Body Slam": "Lijfstraf",
+  "Bone Club": "Botknuppel",
+  "Bonemerang": "Boemerang",
+  "Bubble": "Bubbel",
+  "Confusion": "Verwarring",
+  "Crabhammer": "Krabhamer",
+  "Dig": "Graaf",
+  "Dizzy Punch": "Duizelslag",
+  "Dragon Rage": "Drakenfurie",
+  "Drill Peck": "Drilboor",
+  "Earthquake": "Aardbeving",
+  "Egg Bomb": "Eierbom",
+  "Ember": "Sintel",
+  "Fire Blast": "Vuurschot",
+  "Fire Punch": "Vuurslag",
+  "Flamethrower": "Vlammenwerper",
+  "Gust": "Windvlaag",
+  "Harden": "Verharding",
+  "High Jump Kick": "Hoge Sprongschop",
+  "Horn Attack": "Hoornaanval",
+  "Hydro Pump": "Hydropomp",
+  "Hyper Beam": "Hyperstraal",
+  "Hyper Fang": "Hypertand",
+  "Hypnosis": "Hypnose",
+  "Ice Beam": "IJsstraal",
+  "Ice Punch": "IJsslag",
+  "Karate Chop": "Karateslag",
+  "Leech Life": "Onttrek Leven",
+  "Lick": "Lik",
+  "Low Kick": "Lage schop",
+  "Metronome": "Metronoom",
+  "Night Shade": "Nachtschade",
+  "Pay Day": "Afrekening",
+  "Peck": "Boor",
+  "Petal Dance": "Bloemendans",
+  "Poison Sting": "Gifangel",
+  "Psybeam": "Psystraal",
+  "Psychic": "Psychisch",
+  "Quick Attack": "Snelle Aanval",
+  "Razor Leaf": "Messcherpblad",
+  "Rock Throw": "Steenworp",
+  "Seismic Toss": "Seismische smak",
+  "Shadow Ball": "Schaduwbal",
+  "Sing": "Zang",
+  "Slash": "Hak",
+  "Sludge": "Blubber",
+  "Smog": "Smog",
+  "Solar Beam": "Zonnestraal",
+  "Splash": "Spetter",
+  "Spore": "Spoor",
+  "String Shot": "Bindschot",
+  "Submission": "Onderwerping",
+  "Swift": "Snel",
+  "Take Down": "Haal neer",
+  "Teleport": "Teleporteer",
+  "Thunder": "Donder",
+  "Thunder Punch": "Donderslag",
+  "Thunder Shock": "Donderschok",
+  "Thunderbolt": "Bliksemstraal",
+  "Transform": "Transformeer",
+  "Tri Attack": "Tri attack",
+  "Twineedle": "Dubbelnaald",
+  "Vine Whip": "Roede",
+  "Vise Grip": "Handgreep",
+  "Water Gun": "Waterpistool",
+  "Waterfall": "Waterval",
+  "Wing Attack": "Vleugelaanval",
+  "Wrap": "Wikkel",
+};
+
+function dutchMoveName(englishName) {
+  return NL_OVERRIDES[englishName] || MOVE_NAMES_NL[englishName] || englishName;
+}

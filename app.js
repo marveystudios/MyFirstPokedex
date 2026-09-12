@@ -59,11 +59,26 @@ function getSpeechName(id, displayName) {
   return displayName;
 }
 
-function speak(text) {
+// Setting utterance.lang alone isn't always enough — some devices read Dutch
+// text with an English voice unless an actual nl voice is assigned. Prefer
+// Flemish, fall back to any Dutch, then let the browser decide.
+function pickVoice(lang) {
+  const voices = window.speechSynthesis.getVoices();
+  if (!voices.length) return null; // not populated yet; lang alone will have to do
+  const norm = v => v.lang.replace("_", "-");
+  const base = lang.split("-")[0] + "-";
+  return voices.find(v => norm(v) === lang)
+      || voices.find(v => norm(v).startsWith(base))
+      || null;
+}
+
+function speak(text, lang = "en-US") {
   // Cancel anything already queued so rapid taps don't stack up.
   window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "en-US";
+  utterance.lang = lang;
+  const voice = pickVoice(lang);
+  if (voice) utterance.voice = voice;
   utterance.rate = 0.65; // slow, for a 4-year-old learning the word
   utterance.pitch = 1;
   window.speechSynthesis.speak(utterance);
@@ -167,7 +182,12 @@ function moveSectionHtml(id) {
       <img class="move-sprite" src="${animatedSpriteUrl(id)}" alt="">
     </div>
     <button class="move-button" id="moveBtn" style="background: ${color}">
-      <span>${move.name}</span> <span class="move-play">\u25b6</span>
+      <span class="move-label">
+        <span class="move-name-nl">${dutchMoveName(move.name)}</span>
+        ${dutchMoveName(move.name) === move.name ? ""
+          : `<span class="move-name-en">${move.name}</span>`}
+      </span>
+      <span class="move-play">\u25b6</span>
     </button>`;
 }
 
@@ -243,7 +263,7 @@ function renderDetail(id, list) {
     // announce itself. Only the deliberate tap speaks, so it doesn't talk over
     // the Pokémon's name.
     playMove(stage);
-    const replay = () => { playMove(stage); speak(move.name); };
+    const replay = () => { playMove(stage); speak(dutchMoveName(move.name), "nl-BE"); };
     stage.addEventListener("click", replay);
     document.getElementById("moveBtn").addEventListener("click", replay);
   }
