@@ -61,15 +61,33 @@ function getSpeechName(id, displayName) {
 
 // Setting utterance.lang alone isn't always enough — some devices read Dutch
 // text with an English voice unless an actual nl voice is assigned. Prefer
-// Flemish, fall back to any Dutch, then let the browser decide.
+// Flemish, fall back to any Dutch, then any voice at all.
+//
+// getVoices() is populated asynchronously and can be empty on first call, so
+// the list is cached and refreshed when the browser says it changed.
+let voiceCache = [];
+
+function refreshVoices() {
+  voiceCache = window.speechSynthesis.getVoices() || [];
+}
+
+refreshVoices();
+if ("onvoiceschanged" in window.speechSynthesis) {
+  window.speechSynthesis.addEventListener("voiceschanged", refreshVoices);
+}
+
 function pickVoice(lang) {
-  const voices = window.speechSynthesis.getVoices();
-  if (!voices.length) return null; // not populated yet; lang alone will have to do
+  if (!voiceCache.length) refreshVoices();
+  if (!voiceCache.length) return null;
   const norm = v => v.lang.replace("_", "-");
   const base = lang.split("-")[0] + "-";
-  return voices.find(v => norm(v) === lang)
-      || voices.find(v => norm(v).startsWith(base))
-      || null;
+  return voiceCache.find(v => norm(v) === lang)
+      || voiceCache.find(v => norm(v).startsWith(base))
+      // Never return null while voices exist: leaving utterance.voice unset
+      // lets iOS reuse whichever voice spoke last, so a Dutch move name made
+      // the next Pokémon name come out with a Dutch accent.
+      || voiceCache.find(v => v.default)
+      || voiceCache[0];
 }
 
 function speak(text, lang = "en-US") {

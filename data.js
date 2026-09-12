@@ -598,8 +598,8 @@ const EPISODES = {
 // as the dub had them; put a replacement in NL_OVERRIDES to change one without
 // touching the table below.
 const NL_OVERRIDES = {
-  // "Body Slam": "Lichaamsstoot",
-  // "Vine Whip": "Rankzweep",
+  "Body Slam": "Lichaamsstoot", // dub said "Lijfstraf" = corporal punishment
+  "Vine Whip": "Rankzweep",     // dub said "Roede", archaic and awkward
 };
 
 const MOVE_NAMES_NL = {
