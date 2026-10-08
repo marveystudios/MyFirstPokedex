@@ -229,7 +229,16 @@ function episodeSectionHtml(id) {
     </div>`;
 }
 
-function renderDetail(id, list) {
+// The grid only ever shows the 151; detail pages also know the later-gen
+// family members (Pichu, Steelix, ...) so they can be linked to and opened.
+function withLinkedPokemon(list) {
+  const linked = Object.entries(LINKED_POKEMON).map(([id, p]) =>
+    ({ id: parseInt(id, 10), name: p.name, speech: p.speech || p.name }));
+  return list.concat(linked);
+}
+
+function renderDetail(id, gen1List) {
+  const list = withLinkedPokemon(gen1List);
   const pokemon = list.find(p => p.id === id);
 
   if (!pokemon) {

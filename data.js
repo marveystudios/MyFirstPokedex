@@ -1,5 +1,6 @@
-// Static data for the 151 Gen 1 Pokémon: name/speech overrides for the
-// handful that don't work with simple hyphen-splitting, and the
+// Static data for the 151 Gen 1 Pokémon (plus the later-generation members of
+// their families): name/speech overrides for the handful that don't work with
+// simple hyphen-splitting, and the
 // evolution/prevolution relationships (hardcoded rather than fetched from
 // PokeAPI's evolution-chain endpoint — Gen 1 lines are fixed and well-known,
 // and this avoids ~150 extra API calls plus branching-chain parsing).
@@ -70,7 +71,77 @@ const EVOLUTION_PAIRS = [
   [138, 139],
   [140, 141],
   [147, 148], [148, 149],
+
+  // Later-generation members of the same families. Their ids are > 151 and
+  // they live in LINKED_POKEMON below: reachable from a detail page, but
+  // never shown in the main grid.
+  [172, 25],                      // Pichu -> Pikachu
+  [173, 35],                      // Cleffa -> Clefairy
+  [174, 39],                      // Igglybuff -> Jigglypuff
+  [42, 169],                      // Golbat -> Crobat
+  [44, 182],                      // Gloom -> Bellossom
+  [57, 979],                      // Primeape -> Annihilape
+  [61, 186],                      // Poliwhirl -> Politoed
+  [79, 199],                      // Slowpoke -> Slowking
+  [82, 462],                      // Magneton -> Magnezone
+  [95, 208],                      // Onix -> Steelix
+  [236, 106], [236, 107], [236, 237], // Tyrogue -> Hitmonlee / Hitmonchan / Hitmontop
+  [108, 463],                     // Lickitung -> Lickilicky
+  [112, 464],                     // Rhydon -> Rhyperior
+  [440, 113], [113, 242],         // Happiny -> Chansey -> Blissey
+  [114, 465],                     // Tangela -> Tangrowth
+  [117, 230],                     // Seadra -> Kingdra
+  [439, 122],                     // Mime Jr. -> Mr. Mime
+  [123, 212], [123, 900],         // Scyther -> Scizor / Kleavor
+  [238, 124],                     // Smoochum -> Jynx
+  [239, 125], [125, 466],         // Elekid -> Electabuzz -> Electivire
+  [240, 126], [126, 467],         // Magby -> Magmar -> Magmortar
+  [133, 196], [133, 197], [133, 470], [133, 471], [133, 700], // Eevee -> Espeon / Umbreon / Leafeon / Glaceon / Sylveon
+  [137, 233], [233, 474],         // Porygon -> Porygon2 -> Porygon-Z
+  [446, 143],                     // Munchlax -> Snorlax
+  // Left out on purpose: Perrserker, Sirfetch'd and Mr. Rime only evolve from
+  // the Galarian forms, so showing them under the Kanto artwork would be wrong.
 ];
+
+// The later-generation Pokémon referenced above. Names are hardcoded because
+// the main list only fetches the first 151 from PokeAPI.
+// [id]: { name, speech? }
+const LINKED_POKEMON = {
+  169: { name: "Crobat" },
+  172: { name: "Pichu" },
+  173: { name: "Cleffa" },
+  174: { name: "Igglybuff" },
+  182: { name: "Bellossom" },
+  186: { name: "Politoed" },
+  196: { name: "Espeon" },
+  197: { name: "Umbreon" },
+  199: { name: "Slowking" },
+  208: { name: "Steelix" },
+  212: { name: "Scizor" },
+  230: { name: "Kingdra" },
+  233: { name: "Porygon2", speech: "Porygon two" },
+  236: { name: "Tyrogue" },
+  237: { name: "Hitmontop" },
+  238: { name: "Smoochum" },
+  239: { name: "Elekid" },
+  240: { name: "Magby" },
+  242: { name: "Blissey" },
+  439: { name: "Mime Jr.", speech: "Mime Junior" },
+  440: { name: "Happiny" },
+  446: { name: "Munchlax" },
+  462: { name: "Magnezone" },
+  463: { name: "Lickilicky" },
+  464: { name: "Rhyperior" },
+  465: { name: "Tangrowth" },
+  466: { name: "Electivire" },
+  467: { name: "Magmortar" },
+  470: { name: "Leafeon" },
+  471: { name: "Glaceon" },
+  474: { name: "Porygon-Z", speech: "Porygon Z" },
+  700: { name: "Sylveon" },
+  900: { name: "Kleavor" },
+  979: { name: "Annihilape" },
+};
 
 // Built once, at load: id -> prevoId, id -> [evoIds]
 const EVOLVES_FROM = {};
@@ -263,6 +334,42 @@ const POKEMON_TYPES = {
   149: ["dragon", "flying"],
   150: ["psychic"],
   151: ["psychic"],
+
+  // Linked later-generation Pokémon (see LINKED_POKEMON)
+  169: ["poison", "flying"],
+  172: ["electric"],
+  173: ["fairy"],
+  174: ["normal", "fairy"],
+  182: ["grass"],
+  186: ["water"],
+  196: ["psychic"],
+  197: ["dark"],
+  199: ["water", "psychic"],
+  208: ["steel", "ground"],
+  212: ["bug", "steel"],
+  230: ["water", "dragon"],
+  233: ["normal"],
+  236: ["fighting"],
+  237: ["fighting"],
+  238: ["ice", "psychic"],
+  239: ["electric"],
+  240: ["fire"],
+  242: ["normal"],
+  439: ["psychic", "fairy"],
+  440: ["normal"],
+  446: ["normal"],
+  462: ["electric", "steel"],
+  463: ["normal"],
+  464: ["ground", "rock"],
+  465: ["grass"],
+  466: ["electric"],
+  467: ["fire"],
+  470: ["grass"],
+  471: ["ice"],
+  474: ["normal"],
+  700: ["fairy"],
+  900: ["bug", "rock"],
+  979: ["fighting", "ghost"],
 };
 
 // [id]: the one move this Pokémon is best known for, leaning on the anime
