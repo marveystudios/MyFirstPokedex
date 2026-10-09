@@ -136,15 +136,48 @@ async function loadPokemonList() {
   return list;
 }
 
-function renderGrid(list) {
-  app.innerHTML = `<div class="grid" id="grid"></div>`;
-  const grid = document.getElementById("grid");
+// "#025" — the Pokédex number as it's usually written.
+function dexNumber(id) {
+  return "#" + String(id).padStart(3, "0");
+}
 
-  list.forEach(pokemon => {
+// Matches on the name (and spoken name, so "mister" finds Mr. Mime) or, for a
+// query of digits, on the start of the Pokédex number.
+function matchesSearch(pokemon, query) {
+  if (!query) return true;
+  const digits = query.replace(/^#/, "");
+  if (/^\d+$/.test(digits)) {
+    // "7" finds 7, 70-79, ... while typing; "007" (as printed on the card) finds just 7.
+    return String(pokemon.id).startsWith(digits)
+        || dexNumber(pokemon.id).slice(1).startsWith(digits);
+  }
+  const normalize = text => text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  const q = normalize(query);
+  return normalize(pokemon.name).includes(q) || normalize(pokemon.speech).includes(q);
+}
+
+function renderGrid(gen1List) {
+  app.innerHTML = `
+    <div class="search-bar">
+      <input type="search" id="search" placeholder="Search by name or number"
+             autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+             aria-label="Search Pokémon">
+    </div>
+    <div class="grid" id="grid"></div>
+    <p class="no-results" id="noResults" hidden>No Pokémon found.</p>`;
+  const grid = document.getElementById("grid");
+  const search = document.getElementById("search");
+  const noResults = document.getElementById("noResults");
+
+  // The later-gen family members get cards too, but they only show up while
+  // searching — the browsing view stays the 151.
+  const gen1Count = gen1List.length;
+  const cards = withLinkedPokemon(gen1List).map((pokemon, index) => {
     const card = document.createElement("div");
     card.className = "card";
     card.innerHTML = `
       <div class="card-tap-area">
+        <div class="number">${dexNumber(pokemon.id)}</div>
         <img src="${spriteUrl(pokemon.id)}" alt="${pokemon.name}" loading="lazy">
         <div class="name">${pokemon.name}</div>
       </div>
@@ -159,7 +192,28 @@ function renderGrid(list) {
       speak(pokemon.speech);
     });
     grid.appendChild(card);
+    return { pokemon, card, linked: index >= gen1Count };
   });
+
+  function applySearch() {
+    const query = searchQuery.trim();
+    let shown = 0;
+    cards.forEach(({ pokemon, card, linked }) => {
+      const visible = (query || !linked) && matchesSearch(pokemon, query);
+      card.hidden = !visible;
+      if (visible) shown++;
+    });
+    noResults.hidden = shown > 0;
+  }
+
+  // Filtering hides cards rather than re-rendering, so the input keeps focus
+  // and the images don't reload on every keystroke.
+  search.value = searchQuery;
+  search.addEventListener("input", () => {
+    searchQuery = search.value;
+    applySearch();
+  });
+  applySearch();
 }
 
 function miniCardHtml(pokemon) {
@@ -229,7 +283,7 @@ function episodeSectionHtml(id) {
     </div>`;
 }
 
-// The grid only ever shows the 151; detail pages also know the later-gen
+// The grid browses the 151 (the rest only turn up in search); detail pages also know the later-gen
 // family members (Pichu, Steelix, ...) so they can be linked to and opened.
 function withLinkedPokemon(list) {
   const linked = Object.entries(LINKED_POKEMON).map(([id, p]) =>
@@ -301,6 +355,7 @@ function renderDetail(id, gen1List) {
 
 let pokemonList = [];
 let gridScrollY = 0;
+let searchQuery = ""; // kept while visiting a detail page, so Back returns to the results
 
 function route() {
   const match = location.hash.match(/^#\/pokemon\/(\d+)$/);

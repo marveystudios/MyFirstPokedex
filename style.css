@@ -31,6 +31,51 @@ body {
 
 /* --- Grid view --- */
 
+.search-bar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  max-width: 1000px;
+  margin: 0 auto 16px;
+  padding: 8px 0;
+  background: #f4f6fb;
+}
+
+.search-bar input {
+  width: 100%;
+  font-size: 18px; /* 16px+ stops iOS zooming in on focus */
+  padding: 12px 18px;
+  border: 2px solid #e0e3ec;
+  border-radius: 14px;
+  background: #fff;
+  color: #2b2b40;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.search-bar input:focus {
+  border-color: #ffcb05;
+}
+
+.no-results {
+  text-align: center;
+  font-size: 18px;
+  color: #6b6b80;
+  margin: 40px 0;
+}
+
+.card[hidden] {
+  display: none;
+}
+
+.card .number {
+  font-size: 14px;
+  font-weight: 600;
+  color: #9a9aae;
+  text-align: left;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
