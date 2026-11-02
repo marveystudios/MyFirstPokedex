@@ -31,6 +31,45 @@ body {
 
 /* --- Grid view --- */
 
+.gen-switch {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  max-width: 1000px;
+  margin: 8px auto 4px;
+}
+
+.gen-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 18px 6px 8px;
+  border: 2px solid #e0e3ec;
+  border-radius: 999px;
+  background: #fff;
+  color: #2b2b40;
+  font-size: 18px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.gen-button img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+}
+
+.gen-button[aria-pressed="true"] {
+  background: #ffcb05;
+  border-color: #ffcb05;
+  box-shadow: 0 3px 0 #d9a800;
+}
+
+.gen-button:active {
+  transform: translateY(2px);
+}
+
 .search-bar {
   position: sticky;
   top: 0;

@@ -1,9 +1,11 @@
-// My First Pokédex — grid + detail view for the 151 Gen 1 Pokémon.
-// Data: names from PokeAPI (cached in localStorage after first load),
-// sprites constructed directly from id, evolution relationships from
-// the local lookup table in data.js.
+// My First Pokédex — grid + detail view for the 151 Gen 1 Pokémon, with a
+// switch at the top to browse the 100 Gen 2 Pokémon instead.
+// Data: Gen 1 names from PokeAPI (cached in localStorage after first load),
+// Gen 2 names, and evolution relationships from the local lookup tables in
+// data.js; sprites constructed directly from id.
 
 const CACHE_KEY = "pokedex-gen1-list-v1";
+const GEN_KEY = "pokedex-gen";
 const app = document.getElementById("app");
 
 function spriteUrl(id) {
@@ -158,6 +160,13 @@ function matchesSearch(pokemon, query) {
 
 function renderGrid(gen1List) {
   app.innerHTML = `
+    <div class="gen-switch" role="group" aria-label="Generation">
+      ${[1, 2].map(gen => `
+        <button class="gen-button" data-gen="${gen}" aria-pressed="${gen === currentGen}">
+          <img src="${spriteUrl(GEN_ICONS[gen])}" alt="">
+          <span>Gen ${gen}</span>
+        </button>`).join("")}
+    </div>
     <div class="search-bar">
       <input type="search" id="search" placeholder="Search by name or number"
              autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
@@ -169,10 +178,9 @@ function renderGrid(gen1List) {
   const search = document.getElementById("search");
   const noResults = document.getElementById("noResults");
 
-  // The later-gen family members get cards too, but they only show up while
-  // searching — the browsing view stays the 151.
-  const gen1Count = gen1List.length;
-  const cards = withLinkedPokemon(gen1List).map((pokemon, index) => {
+  // Every known Pokémon gets a card; browsing shows the chosen generation, and
+  // a search looks through all of them (later-gen family members included).
+  const cards = withLinkedPokemon(gen1List).map(pokemon => {
     const card = document.createElement("div");
     card.className = "card";
     card.innerHTML = `
@@ -192,14 +200,14 @@ function renderGrid(gen1List) {
       speak(pokemon.speech);
     });
     grid.appendChild(card);
-    return { pokemon, card, linked: index >= gen1Count };
+    return { pokemon, card };
   });
 
   function applySearch() {
     const query = searchQuery.trim();
     let shown = 0;
-    cards.forEach(({ pokemon, card, linked }) => {
-      const visible = (query || !linked) && matchesSearch(pokemon, query);
+    cards.forEach(({ pokemon, card }) => {
+      const visible = (query || pokemon.gen === currentGen) && matchesSearch(pokemon, query);
       card.hidden = !visible;
       if (visible) shown++;
     });
@@ -213,6 +221,22 @@ function renderGrid(gen1List) {
     searchQuery = search.value;
     applySearch();
   });
+
+  app.querySelectorAll(".gen-button").forEach(button => {
+    button.addEventListener("click", () => {
+      currentGen = parseInt(button.dataset.gen, 10);
+      try { localStorage.setItem(GEN_KEY, String(currentGen)); } catch (e) { /* not remembered, fine */ }
+      app.querySelectorAll(".gen-button").forEach(b =>
+        b.setAttribute("aria-pressed", String(b === button)));
+      // A leftover search would hide the switch's effect, so start clean.
+      searchQuery = "";
+      search.value = "";
+      applySearch();
+      gridScrollY = 0;
+      window.scrollTo(0, 0);
+    });
+  });
+
   applySearch();
 }
 
@@ -283,13 +307,20 @@ function episodeSectionHtml(id) {
     </div>`;
 }
 
-// The grid browses the 151 (the rest only turn up in search); detail pages also know the later-gen
-// family members (Pichu, Steelix, ...) so they can be linked to and opened.
+// Gen 1 (from PokeAPI), then Gen 2 and the later-gen family members (Togekiss,
+// Weavile, ...) from data.js, each tagged with the generation the grid browses
+// it under — 0 for the linked ones, which only turn up in search and on
+// detail pages.
 function withLinkedPokemon(list) {
-  const linked = Object.entries(LINKED_POKEMON).map(([id, p]) =>
-    ({ id: parseInt(id, 10), name: p.name, speech: p.speech || p.name }));
-  return list.concat(linked);
+  const fromTable = (table, gen) => Object.entries(table).map(([id, p]) =>
+    ({ id: parseInt(id, 10), name: p.name, speech: p.speech || p.name, gen }));
+  return list.map(p => ({ ...p, gen: 1 }))
+    .concat(fromTable(GEN2_POKEMON, 2), fromTable(LINKED_POKEMON, 0));
 }
+
+// Shown on the generation buttons, for a reader who goes by pictures:
+// Pikachu for Gen 1, Chikorita for Gen 2.
+const GEN_ICONS = { 1: 25, 2: 152 };
 
 function renderDetail(id, gen1List) {
   const list = withLinkedPokemon(gen1List);
@@ -356,6 +387,8 @@ function renderDetail(id, gen1List) {
 let pokemonList = [];
 let gridScrollY = 0;
 let searchQuery = ""; // kept while visiting a detail page, so Back returns to the results
+let currentGen = 1;
+try { if (localStorage.getItem(GEN_KEY) === "2") currentGen = 2; } catch (e) { /* default to Gen 1 */ }
 
 function route() {
   const match = location.hash.match(/^#\/pokemon\/(\d+)$/);

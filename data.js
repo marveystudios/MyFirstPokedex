@@ -1,5 +1,5 @@
-// Static data for the 151 Gen 1 Pokémon (plus the later-generation members of
-// their families): name/speech overrides for the handful that don't work with
+// Static data for the 151 Gen 1 Pokémon, the 100 Gen 2 Pokémon (plus the
+// later-generation members of their families): name/speech overrides for the handful that don't work with
 // simple hyphen-splitting, and the
 // evolution/prevolution relationships (hardcoded rather than fetched from
 // PokeAPI's evolution-chain endpoint — Gen 1 lines are fixed and well-known,
@@ -101,46 +101,191 @@ const EVOLUTION_PAIRS = [
   [446, 143],                     // Munchlax -> Snorlax
   // Left out on purpose: Perrserker, Sirfetch'd and Mr. Rime only evolve from
   // the Galarian forms, so showing them under the Kanto artwork would be wrong.
+
+  // Gen 2 lines (the ones that start in Gen 1 are above).
+  [152, 153], [153, 154],         // Chikorita -> Bayleef -> Meganium
+  [155, 156], [156, 157],         // Cyndaquil -> Quilava -> Typhlosion
+  [158, 159], [159, 160],         // Totodile -> Croconaw -> Feraligatr
+  [161, 162],                     // Sentret -> Furret
+  [163, 164],                     // Hoothoot -> Noctowl
+  [165, 166],                     // Ledyba -> Ledian
+  [167, 168],                     // Spinarak -> Ariados
+  [170, 171],                     // Chinchou -> Lanturn
+  [175, 176], [176, 468],         // Togepi -> Togetic -> Togekiss
+  [177, 178],                     // Natu -> Xatu
+  [179, 180], [180, 181],         // Mareep -> Flaaffy -> Ampharos
+  [298, 183], [183, 184],         // Azurill -> Marill -> Azumarill
+  [438, 185],                     // Bonsly -> Sudowoodo
+  [187, 188], [188, 189],         // Hoppip -> Skiploom -> Jumpluff
+  [190, 424],                     // Aipom -> Ambipom
+  [191, 192],                     // Sunkern -> Sunflora
+  [193, 469],                     // Yanma -> Yanmega
+  [194, 195],                     // Wooper -> Quagsire
+  [198, 430],                     // Murkrow -> Honchkrow
+  [200, 429],                     // Misdreavus -> Mismagius
+  [360, 202],                     // Wynaut -> Wobbuffet
+  [203, 981],                     // Girafarig -> Farigiraf
+  [204, 205],                     // Pineco -> Forretress
+  [206, 982],                     // Dunsparce -> Dudunsparce
+  [207, 472],                     // Gligar -> Gliscor
+  [209, 210],                     // Snubbull -> Granbull
+  [215, 461],                     // Sneasel -> Weavile
+  [216, 217], [217, 901],         // Teddiursa -> Ursaring -> Ursaluna
+  [218, 219],                     // Slugma -> Magcargo
+  [220, 221], [221, 473],         // Swinub -> Piloswine -> Mamoswine
+  [223, 224],                     // Remoraid -> Octillery
+  [458, 226],                     // Mantyke -> Mantine
+  [228, 229],                     // Houndour -> Houndoom
+  [231, 232],                     // Phanpy -> Donphan
+  [234, 899],                     // Stantler -> Wyrdeer
+  [246, 247], [247, 248],         // Larvitar -> Pupitar -> Tyranitar
+  // Left out for the same reason as above: Clodsire (Paldean Wooper),
+  // Overqwil (Hisuian Qwilfish), Sneasler (Hisuian Sneasel) and Cursola
+  // (Galarian Corsola).
 ];
 
-// The later-generation Pokémon referenced above. Names are hardcoded because
-// the main list only fetches the first 151 from PokeAPI.
+// The 100 Gen 2 Pokémon (ids 152-251), browsable from the generation switch.
+// Names are hardcoded because the main list only fetches the first 151 from
+// PokeAPI.
 // [id]: { name, speech? }
-const LINKED_POKEMON = {
+const GEN2_POKEMON = {
+  152: { name: "Chikorita" },
+  153: { name: "Bayleef" },
+  154: { name: "Meganium" },
+  155: { name: "Cyndaquil" },
+  156: { name: "Quilava" },
+  157: { name: "Typhlosion" },
+  158: { name: "Totodile" },
+  159: { name: "Croconaw" },
+  160: { name: "Feraligatr" },
+  161: { name: "Sentret" },
+  162: { name: "Furret" },
+  163: { name: "Hoothoot" },
+  164: { name: "Noctowl" },
+  165: { name: "Ledyba" },
+  166: { name: "Ledian" },
+  167: { name: "Spinarak" },
+  168: { name: "Ariados" },
   169: { name: "Crobat" },
+  170: { name: "Chinchou" },
+  171: { name: "Lanturn" },
   172: { name: "Pichu" },
   173: { name: "Cleffa" },
   174: { name: "Igglybuff" },
+  175: { name: "Togepi" },
+  176: { name: "Togetic" },
+  177: { name: "Natu" },
+  178: { name: "Xatu" },
+  179: { name: "Mareep" },
+  180: { name: "Flaaffy" },
+  181: { name: "Ampharos" },
   182: { name: "Bellossom" },
+  183: { name: "Marill" },
+  184: { name: "Azumarill" },
+  185: { name: "Sudowoodo" },
   186: { name: "Politoed" },
+  187: { name: "Hoppip" },
+  188: { name: "Skiploom" },
+  189: { name: "Jumpluff" },
+  190: { name: "Aipom" },
+  191: { name: "Sunkern" },
+  192: { name: "Sunflora" },
+  193: { name: "Yanma" },
+  194: { name: "Wooper" },
+  195: { name: "Quagsire" },
   196: { name: "Espeon" },
   197: { name: "Umbreon" },
+  198: { name: "Murkrow" },
   199: { name: "Slowking" },
+  200: { name: "Misdreavus" },
+  201: { name: "Unown" },
+  202: { name: "Wobbuffet" },
+  203: { name: "Girafarig" },
+  204: { name: "Pineco" },
+  205: { name: "Forretress" },
+  206: { name: "Dunsparce" },
+  207: { name: "Gligar" },
   208: { name: "Steelix" },
+  209: { name: "Snubbull" },
+  210: { name: "Granbull" },
+  211: { name: "Qwilfish" },
   212: { name: "Scizor" },
+  213: { name: "Shuckle" },
+  214: { name: "Heracross" },
+  215: { name: "Sneasel" },
+  216: { name: "Teddiursa" },
+  217: { name: "Ursaring" },
+  218: { name: "Slugma" },
+  219: { name: "Magcargo" },
+  220: { name: "Swinub" },
+  221: { name: "Piloswine" },
+  222: { name: "Corsola" },
+  223: { name: "Remoraid" },
+  224: { name: "Octillery" },
+  225: { name: "Delibird" },
+  226: { name: "Mantine" },
+  227: { name: "Skarmory" },
+  228: { name: "Houndour" },
+  229: { name: "Houndoom" },
   230: { name: "Kingdra" },
+  231: { name: "Phanpy" },
+  232: { name: "Donphan" },
   233: { name: "Porygon2", speech: "Porygon two" },
+  234: { name: "Stantler" },
+  235: { name: "Smeargle" },
   236: { name: "Tyrogue" },
   237: { name: "Hitmontop" },
   238: { name: "Smoochum" },
   239: { name: "Elekid" },
   240: { name: "Magby" },
+  241: { name: "Miltank" },
   242: { name: "Blissey" },
+  243: { name: "Raikou" },
+  244: { name: "Entei" },
+  245: { name: "Suicune" },
+  246: { name: "Larvitar" },
+  247: { name: "Pupitar" },
+  248: { name: "Tyranitar" },
+  249: { name: "Lugia" },
+  250: { name: "Ho-Oh" },
+  251: { name: "Celebi" },
+};
+
+// The later-generation Pokémon referenced above, outside Gen 1 and 2: reachable
+// from a detail page and from search, but never in the browsing grid.
+// [id]: { name, speech? }
+const LINKED_POKEMON = {
+  298: { name: "Azurill" },
+  360: { name: "Wynaut" },
+  424: { name: "Ambipom" },
+  429: { name: "Mismagius" },
+  430: { name: "Honchkrow" },
+  438: { name: "Bonsly" },
   439: { name: "Mime Jr.", speech: "Mime Junior" },
   440: { name: "Happiny" },
   446: { name: "Munchlax" },
+  458: { name: "Mantyke" },
+  461: { name: "Weavile" },
   462: { name: "Magnezone" },
   463: { name: "Lickilicky" },
   464: { name: "Rhyperior" },
   465: { name: "Tangrowth" },
   466: { name: "Electivire" },
   467: { name: "Magmortar" },
+  468: { name: "Togekiss" },
+  469: { name: "Yanmega" },
   470: { name: "Leafeon" },
   471: { name: "Glaceon" },
+  472: { name: "Gliscor" },
+  473: { name: "Mamoswine" },
   474: { name: "Porygon-Z", speech: "Porygon Z" },
   700: { name: "Sylveon" },
+  899: { name: "Wyrdeer" },
   900: { name: "Kleavor" },
+  901: { name: "Ursaluna" },
   979: { name: "Annihilape" },
+  981: { name: "Farigiraf" },
+  982: { name: "Dudunsparce" },
 };
 
 // Built once, at load: id -> prevoId, id -> [evoIds]
@@ -335,7 +480,7 @@ const POKEMON_TYPES = {
   150: ["psychic"],
   151: ["psychic"],
 
-  // Linked later-generation Pokémon (see LINKED_POKEMON)
+  // Gen 2 and linked later-generation Pokémon (see GEN2_POKEMON, LINKED_POKEMON)
   169: ["poison", "flying"],
   172: ["electric"],
   173: ["fairy"],
