@@ -1,5 +1,5 @@
-// Static data for the 151 Gen 1 Pokémon, the 100 Gen 2 Pokémon (plus the
-// later-generation members of their families): name/speech overrides for the handful that don't work with
+// Static data for the 151 Gen 1 Pokémon, the 100 Gen 2 Pokémon, the 135 Gen 3
+// Pokémon (plus the later-generation members of their families): name/speech overrides for the handful that don't work with
 // simple hyphen-splitting, and the
 // evolution/prevolution relationships (hardcoded rather than fetched from
 // PokeAPI's evolution-chain endpoint — Gen 1 lines are fixed and well-known,
@@ -142,6 +142,56 @@ const EVOLUTION_PAIRS = [
   // Left out for the same reason as above: Clodsire (Paldean Wooper),
   // Overqwil (Hisuian Qwilfish), Sneasler (Hisuian Sneasel) and Cursola
   // (Galarian Corsola).
+
+  // Gen 3 lines (Azurill and Wynaut are above, with Marill and Wobbuffet).
+  [252, 253], [253, 254],         // Treecko -> Grovyle -> Sceptile
+  [255, 256], [256, 257],         // Torchic -> Combusken -> Blaziken
+  [258, 259], [259, 260],         // Mudkip -> Marshtomp -> Swampert
+  [261, 262],                     // Poochyena -> Mightyena
+  [263, 264],                     // Zigzagoon -> Linoone
+  [265, 266], [266, 267],         // Wurmple -> Silcoon -> Beautifly
+  [265, 268], [268, 269],         // Wurmple -> Cascoon -> Dustox
+  [270, 271], [271, 272],         // Lotad -> Lombre -> Ludicolo
+  [273, 274], [274, 275],         // Seedot -> Nuzleaf -> Shiftry
+  [276, 277],                     // Taillow -> Swellow
+  [278, 279],                     // Wingull -> Pelipper
+  [280, 281], [281, 282],         // Ralts -> Kirlia -> Gardevoir
+  [281, 475],                     // Kirlia -> Gallade
+  [283, 284],                     // Surskit -> Masquerain
+  [285, 286],                     // Shroomish -> Breloom
+  [287, 288], [288, 289],         // Slakoth -> Vigoroth -> Slaking
+  [290, 291], [290, 292],         // Nincada -> Ninjask / Shedinja
+  [293, 294], [294, 295],         // Whismur -> Loudred -> Exploud
+  [296, 297],                     // Makuhita -> Hariyama
+  [299, 476],                     // Nosepass -> Probopass
+  [300, 301],                     // Skitty -> Delcatty
+  [304, 305], [305, 306],         // Aron -> Lairon -> Aggron
+  [307, 308],                     // Meditite -> Medicham
+  [309, 310],                     // Electrike -> Manectric
+  [406, 315], [315, 407],         // Budew -> Roselia -> Roserade
+  [316, 317],                     // Gulpin -> Swalot
+  [318, 319],                     // Carvanha -> Sharpedo
+  [320, 321],                     // Wailmer -> Wailord
+  [322, 323],                     // Numel -> Camerupt
+  [325, 326],                     // Spoink -> Grumpig
+  [328, 329], [329, 330],         // Trapinch -> Vibrava -> Flygon
+  [331, 332],                     // Cacnea -> Cacturne
+  [333, 334],                     // Swablu -> Altaria
+  [339, 340],                     // Barboach -> Whiscash
+  [341, 342],                     // Corphish -> Crawdaunt
+  [343, 344],                     // Baltoy -> Claydol
+  [345, 346],                     // Lileep -> Cradily
+  [347, 348],                     // Anorith -> Armaldo
+  [349, 350],                     // Feebas -> Milotic
+  [353, 354],                     // Shuppet -> Banette
+  [355, 356], [356, 477],         // Duskull -> Dusclops -> Dusknoir
+  [433, 358],                     // Chingling -> Chimecho
+  [361, 362], [361, 478],         // Snorunt -> Glalie / Froslass
+  [363, 364], [364, 365],         // Spheal -> Sealeo -> Walrein
+  [366, 367], [366, 368],         // Clamperl -> Huntail / Gorebyss
+  [371, 372], [372, 373],         // Bagon -> Shelgon -> Salamence
+  [374, 375], [375, 376],         // Beldum -> Metang -> Metagross
+  // Left out for the same reason as above: Obstagoon (Galarian Linoone).
 ];
 
 // The 100 Gen 2 Pokémon (ids 152-251), browsable from the generation switch.
@@ -251,15 +301,156 @@ const GEN2_POKEMON = {
   251: { name: "Celebi" },
 };
 
-// The later-generation Pokémon referenced above, outside Gen 1 and 2: reachable
+// The 135 Gen 3 Pokémon (ids 252-386), browsable from the generation switch.
+// [id]: { name, speech? }
+const GEN3_POKEMON = {
+  252: { name: "Treecko" },
+  253: { name: "Grovyle" },
+  254: { name: "Sceptile" },
+  255: { name: "Torchic" },
+  256: { name: "Combusken" },
+  257: { name: "Blaziken" },
+  258: { name: "Mudkip" },
+  259: { name: "Marshtomp" },
+  260: { name: "Swampert" },
+  261: { name: "Poochyena" },
+  262: { name: "Mightyena" },
+  263: { name: "Zigzagoon" },
+  264: { name: "Linoone" },
+  265: { name: "Wurmple" },
+  266: { name: "Silcoon" },
+  267: { name: "Beautifly" },
+  268: { name: "Cascoon" },
+  269: { name: "Dustox" },
+  270: { name: "Lotad" },
+  271: { name: "Lombre" },
+  272: { name: "Ludicolo" },
+  273: { name: "Seedot" },
+  274: { name: "Nuzleaf" },
+  275: { name: "Shiftry" },
+  276: { name: "Taillow" },
+  277: { name: "Swellow" },
+  278: { name: "Wingull" },
+  279: { name: "Pelipper" },
+  280: { name: "Ralts" },
+  281: { name: "Kirlia" },
+  282: { name: "Gardevoir" },
+  283: { name: "Surskit" },
+  284: { name: "Masquerain" },
+  285: { name: "Shroomish" },
+  286: { name: "Breloom" },
+  287: { name: "Slakoth" },
+  288: { name: "Vigoroth" },
+  289: { name: "Slaking" },
+  290: { name: "Nincada" },
+  291: { name: "Ninjask" },
+  292: { name: "Shedinja" },
+  293: { name: "Whismur" },
+  294: { name: "Loudred" },
+  295: { name: "Exploud" },
+  296: { name: "Makuhita" },
+  297: { name: "Hariyama" },
+  298: { name: "Azurill" },
+  299: { name: "Nosepass" },
+  300: { name: "Skitty" },
+  301: { name: "Delcatty" },
+  302: { name: "Sableye" },
+  303: { name: "Mawile" },
+  304: { name: "Aron" },
+  305: { name: "Lairon" },
+  306: { name: "Aggron" },
+  307: { name: "Meditite" },
+  308: { name: "Medicham" },
+  309: { name: "Electrike" },
+  310: { name: "Manectric" },
+  311: { name: "Plusle" },
+  312: { name: "Minun" },
+  313: { name: "Volbeat" },
+  314: { name: "Illumise" },
+  315: { name: "Roselia" },
+  316: { name: "Gulpin" },
+  317: { name: "Swalot" },
+  318: { name: "Carvanha" },
+  319: { name: "Sharpedo" },
+  320: { name: "Wailmer" },
+  321: { name: "Wailord" },
+  322: { name: "Numel" },
+  323: { name: "Camerupt" },
+  324: { name: "Torkoal" },
+  325: { name: "Spoink" },
+  326: { name: "Grumpig" },
+  327: { name: "Spinda" },
+  328: { name: "Trapinch" },
+  329: { name: "Vibrava" },
+  330: { name: "Flygon" },
+  331: { name: "Cacnea" },
+  332: { name: "Cacturne" },
+  333: { name: "Swablu" },
+  334: { name: "Altaria" },
+  335: { name: "Zangoose" },
+  336: { name: "Seviper" },
+  337: { name: "Lunatone" },
+  338: { name: "Solrock" },
+  339: { name: "Barboach" },
+  340: { name: "Whiscash" },
+  341: { name: "Corphish" },
+  342: { name: "Crawdaunt" },
+  343: { name: "Baltoy" },
+  344: { name: "Claydol" },
+  345: { name: "Lileep" },
+  346: { name: "Cradily" },
+  347: { name: "Anorith" },
+  348: { name: "Armaldo" },
+  349: { name: "Feebas" },
+  350: { name: "Milotic" },
+  351: { name: "Castform" },
+  352: { name: "Kecleon" },
+  353: { name: "Shuppet" },
+  354: { name: "Banette" },
+  355: { name: "Duskull" },
+  356: { name: "Dusclops" },
+  357: { name: "Tropius" },
+  358: { name: "Chimecho" },
+  359: { name: "Absol" },
+  360: { name: "Wynaut" },
+  361: { name: "Snorunt" },
+  362: { name: "Glalie" },
+  363: { name: "Spheal" },
+  364: { name: "Sealeo" },
+  365: { name: "Walrein" },
+  366: { name: "Clamperl" },
+  367: { name: "Huntail" },
+  368: { name: "Gorebyss" },
+  369: { name: "Relicanth" },
+  370: { name: "Luvdisc" },
+  371: { name: "Bagon" },
+  372: { name: "Shelgon" },
+  373: { name: "Salamence" },
+  374: { name: "Beldum" },
+  375: { name: "Metang" },
+  376: { name: "Metagross" },
+  377: { name: "Regirock" },
+  378: { name: "Regice" },
+  379: { name: "Registeel" },
+  380: { name: "Latias" },
+  381: { name: "Latios" },
+  382: { name: "Kyogre" },
+  383: { name: "Groudon" },
+  384: { name: "Rayquaza" },
+  385: { name: "Jirachi" },
+  386: { name: "Deoxys" },
+};
+
+// The later-generation Pokémon referenced above, outside Gen 1, 2 and 3: reachable
 // from a detail page and from search, but never in the browsing grid.
 // [id]: { name, speech? }
 const LINKED_POKEMON = {
-  298: { name: "Azurill" },
-  360: { name: "Wynaut" },
+  406: { name: "Budew" },
+  407: { name: "Roserade" },
   424: { name: "Ambipom" },
   429: { name: "Mismagius" },
   430: { name: "Honchkrow" },
+  433: { name: "Chingling" },
   438: { name: "Bonsly" },
   439: { name: "Mime Jr.", speech: "Mime Junior" },
   440: { name: "Happiny" },
@@ -279,6 +470,10 @@ const LINKED_POKEMON = {
   472: { name: "Gliscor" },
   473: { name: "Mamoswine" },
   474: { name: "Porygon-Z", speech: "Porygon Z" },
+  475: { name: "Gallade" },
+  476: { name: "Probopass" },
+  477: { name: "Dusknoir" },
+  478: { name: "Froslass" },
   700: { name: "Sylveon" },
   899: { name: "Wyrdeer" },
   900: { name: "Kleavor" },
@@ -480,7 +675,8 @@ const POKEMON_TYPES = {
   150: ["psychic"],
   151: ["psychic"],
 
-  // Gen 2 and linked later-generation Pokémon (see GEN2_POKEMON, LINKED_POKEMON)
+  // Gen 2, Gen 3 and linked later-generation Pokémon (see GEN2_POKEMON,
+  // GEN3_POKEMON, LINKED_POKEMON)
   152: ["grass"],
   153: ["grass"],
   154: ["grass"],
@@ -581,11 +777,147 @@ const POKEMON_TYPES = {
   249: ["psychic", "flying"],
   250: ["fire", "flying"],
   251: ["psychic", "grass"],
+  252: ["grass"],
+  253: ["grass"],
+  254: ["grass"],
+  255: ["fire"],
+  256: ["fire", "fighting"],
+  257: ["fire", "fighting"],
+  258: ["water"],
+  259: ["water", "ground"],
+  260: ["water", "ground"],
+  261: ["dark"],
+  262: ["dark"],
+  263: ["normal"],
+  264: ["normal"],
+  265: ["bug"],
+  266: ["bug"],
+  267: ["bug", "flying"],
+  268: ["bug"],
+  269: ["bug", "poison"],
+  270: ["water", "grass"],
+  271: ["water", "grass"],
+  272: ["water", "grass"],
+  273: ["grass"],
+  274: ["grass", "dark"],
+  275: ["grass", "dark"],
+  276: ["normal", "flying"],
+  277: ["normal", "flying"],
+  278: ["water", "flying"],
+  279: ["water", "flying"],
+  280: ["psychic", "fairy"],
+  281: ["psychic", "fairy"],
+  282: ["psychic", "fairy"],
+  283: ["bug", "water"],
+  284: ["bug", "flying"],
+  285: ["grass"],
+  286: ["grass", "fighting"],
+  287: ["normal"],
+  288: ["normal"],
+  289: ["normal"],
+  290: ["bug", "ground"],
+  291: ["bug", "flying"],
+  292: ["bug", "ghost"],
+  293: ["normal"],
+  294: ["normal"],
+  295: ["normal"],
+  296: ["fighting"],
+  297: ["fighting"],
   298: ["normal", "fairy"],
+  299: ["rock"],
+  300: ["normal"],
+  301: ["normal"],
+  302: ["dark", "ghost"],
+  303: ["steel", "fairy"],
+  304: ["steel", "rock"],
+  305: ["steel", "rock"],
+  306: ["steel", "rock"],
+  307: ["fighting", "psychic"],
+  308: ["fighting", "psychic"],
+  309: ["electric"],
+  310: ["electric"],
+  311: ["electric"],
+  312: ["electric"],
+  313: ["bug"],
+  314: ["bug"],
+  315: ["grass", "poison"],
+  316: ["poison"],
+  317: ["poison"],
+  318: ["water", "dark"],
+  319: ["water", "dark"],
+  320: ["water"],
+  321: ["water"],
+  322: ["fire", "ground"],
+  323: ["fire", "ground"],
+  324: ["fire"],
+  325: ["psychic"],
+  326: ["psychic"],
+  327: ["normal"],
+  328: ["ground"],
+  329: ["ground", "dragon"],
+  330: ["ground", "dragon"],
+  331: ["grass"],
+  332: ["grass", "dark"],
+  333: ["normal", "flying"],
+  334: ["dragon", "flying"],
+  335: ["normal"],
+  336: ["poison"],
+  337: ["rock", "psychic"],
+  338: ["rock", "psychic"],
+  339: ["water", "ground"],
+  340: ["water", "ground"],
+  341: ["water"],
+  342: ["water", "dark"],
+  343: ["ground", "psychic"],
+  344: ["ground", "psychic"],
+  345: ["rock", "grass"],
+  346: ["rock", "grass"],
+  347: ["rock", "bug"],
+  348: ["rock", "bug"],
+  349: ["water"],
+  350: ["water"],
+  351: ["normal"],
+  352: ["normal"],
+  353: ["ghost"],
+  354: ["ghost"],
+  355: ["ghost"],
+  356: ["ghost"],
+  357: ["grass", "flying"],
+  358: ["psychic"],
+  359: ["dark"],
   360: ["psychic"],
+  361: ["ice"],
+  362: ["ice"],
+  363: ["ice", "water"],
+  364: ["ice", "water"],
+  365: ["ice", "water"],
+  366: ["water"],
+  367: ["water"],
+  368: ["water"],
+  369: ["water", "rock"],
+  370: ["water"],
+  371: ["dragon"],
+  372: ["dragon"],
+  373: ["dragon", "flying"],
+  374: ["steel", "psychic"],
+  375: ["steel", "psychic"],
+  376: ["steel", "psychic"],
+  377: ["rock"],
+  378: ["ice"],
+  379: ["steel"],
+  380: ["dragon", "psychic"],
+  381: ["dragon", "psychic"],
+  382: ["water"],
+  383: ["ground"],
+  384: ["dragon", "flying"],
+  385: ["steel", "psychic"],
+  386: ["psychic"],
+  406: ["grass", "poison"],
+  407: ["grass", "poison"],
   424: ["normal"],
   429: ["ghost"],
   430: ["dark", "flying"],
+  433: ["psychic"],
   438: ["rock"],
   439: ["psychic", "fairy"],
   440: ["normal"],
@@ -605,6 +937,10 @@ const POKEMON_TYPES = {
   472: ["ground", "flying"],
   473: ["ice", "ground"],
   474: ["normal"],
+  475: ["psychic", "fighting"],
+  476: ["rock", "steel"],
+  477: ["ghost"],
+  478: ["ice", "ghost"],
   700: ["fairy"],
   899: ["normal", "psychic"],
   900: ["bug", "rock"],

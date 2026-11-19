@@ -1,8 +1,8 @@
 // My First Pokédex — grid + detail view for the 151 Gen 1 Pokémon, with a
-// switch at the top to browse the 100 Gen 2 Pokémon instead.
+// switch at the top to browse the 100 Gen 2 or 135 Gen 3 Pokémon instead.
 // Data: Gen 1 names from PokeAPI (cached in localStorage after first load),
-// Gen 2 names, and evolution relationships from the local lookup tables in
-// data.js; sprites constructed directly from id.
+// Gen 2 and 3 names, and evolution relationships from the local lookup tables
+// in data.js; sprites constructed directly from id.
 
 const CACHE_KEY = "pokedex-gen1-list-v1";
 const GEN_KEY = "pokedex-gen";
@@ -161,7 +161,7 @@ function matchesSearch(pokemon, query) {
 function renderGrid(gen1List) {
   app.innerHTML = `
     <div class="gen-switch" role="group" aria-label="Generation">
-      ${[1, 2].map(gen => `
+      ${GENS.map(gen => `
         <button class="gen-button" data-gen="${gen}" aria-pressed="${gen === currentGen}">
           <img src="${spriteUrl(GEN_ICONS[gen])}" alt="">
           <span>Gen ${gen}</span>
@@ -307,7 +307,7 @@ function episodeSectionHtml(id) {
     </div>`;
 }
 
-// Gen 1 (from PokeAPI), then Gen 2 and the later-gen family members (Togekiss,
+// Gen 1 (from PokeAPI), then Gen 2, Gen 3 and the later-gen family members (Togekiss,
 // Weavile, ...) from data.js, each tagged with the generation the grid browses
 // it under — 0 for the linked ones, which only turn up in search and on
 // detail pages.
@@ -315,12 +315,13 @@ function withLinkedPokemon(list) {
   const fromTable = (table, gen) => Object.entries(table).map(([id, p]) =>
     ({ id: parseInt(id, 10), name: p.name, speech: p.speech || p.name, gen }));
   return list.map(p => ({ ...p, gen: 1 }))
-    .concat(fromTable(GEN2_POKEMON, 2), fromTable(LINKED_POKEMON, 0));
+    .concat(fromTable(GEN2_POKEMON, 2), fromTable(GEN3_POKEMON, 3), fromTable(LINKED_POKEMON, 0));
 }
 
 // Shown on the generation buttons, for a reader who goes by pictures:
-// Pikachu for Gen 1, Chikorita for Gen 2.
-const GEN_ICONS = { 1: 25, 2: 152 };
+// Pikachu for Gen 1, Chikorita for Gen 2, Treecko for Gen 3.
+const GEN_ICONS = { 1: 25, 2: 152, 3: 252 };
+const GENS = [1, 2, 3];
 
 function renderDetail(id, gen1List) {
   const list = withLinkedPokemon(gen1List);
@@ -388,7 +389,10 @@ let pokemonList = [];
 let gridScrollY = 0;
 let searchQuery = ""; // kept while visiting a detail page, so Back returns to the results
 let currentGen = 1;
-try { if (localStorage.getItem(GEN_KEY) === "2") currentGen = 2; } catch (e) { /* default to Gen 1 */ }
+try {
+  const saved = parseInt(localStorage.getItem(GEN_KEY), 10);
+  if (GENS.includes(saved)) currentGen = saved;
+} catch (e) { /* default to Gen 1 */ }
 
 function route() {
   const match = location.hash.match(/^#\/pokemon\/(\d+)$/);
