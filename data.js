@@ -100,8 +100,8 @@ const EVOLUTION_PAIRS = [
   [133, 196], [133, 197], [133, 470], [133, 471], [133, 700], // Eevee -> Espeon / Umbreon / Leafeon / Glaceon / Sylveon
   [137, 233], [233, 474],         // Porygon -> Porygon2 -> Porygon-Z
   [446, 143],                     // Munchlax -> Snorlax
-  // Left out on purpose: Perrserker, Sirfetch'd and Mr. Rime only evolve from
-  // the Galarian forms, so showing them under the Kanto artwork would be wrong.
+  // Perrserker, Sirfetch'd and Mr. Rime only evolve from the Galarian forms, so
+  // they're with the regional forms at the end rather than here.
 
   // Gen 2 lines (the ones that start in Gen 1 are above).
   [152, 153], [153, 154],         // Chikorita -> Bayleef -> Meganium
@@ -140,9 +140,8 @@ const EVOLUTION_PAIRS = [
   [231, 232],                     // Phanpy -> Donphan
   [234, 899],                     // Stantler -> Wyrdeer
   [246, 247], [247, 248],         // Larvitar -> Pupitar -> Tyranitar
-  // Left out for the same reason as above: Clodsire (Paldean Wooper),
-  // Overqwil (Hisuian Qwilfish), Sneasler (Hisuian Sneasel) and Cursola
-  // (Galarian Corsola).
+  // Clodsire, Overqwil, Sneasler and Cursola are with the regional forms at the
+  // end, for the same reason as above.
 
   // Gen 3 lines (Azurill and Wynaut are above, with Marill and Wobbuffet).
   [252, 253], [253, 254],         // Treecko -> Grovyle -> Sceptile
@@ -192,7 +191,39 @@ const EVOLUTION_PAIRS = [
   [366, 367], [366, 368],         // Clamperl -> Huntail / Gorebyss
   [371, 372], [372, 373],         // Bagon -> Shelgon -> Salamence
   [374, 375], [375, 376],         // Beldum -> Metang -> Metagross
-  // Left out for the same reason as above: Obstagoon (Galarian Linoone).
+
+  // Regional forms (ids 10000+, see POKEMON_FORMS below). Taken from PokeAPI's
+  // evolution chains, which say which form evolves into which: Alolan Diglett
+  // becomes Alolan Dugtrio, and a plain Pikachu evolving in Alola becomes
+  // Alolan Raichu.
+  [10091, 10092], // Alolan Rattata -> Alolan Raticate
+  [25, 10100],    // Pikachu -> Alolan Raichu
+  [10101, 10102], // Alolan Sandshrew -> Alolan Sandslash
+  [10103, 10104], // Alolan Vulpix -> Alolan Ninetales
+  [10105, 10106], // Alolan Diglett -> Alolan Dugtrio
+  [10107, 10108], // Alolan Meowth -> Alolan Persian
+  [10161, 863],   // Galarian Meowth -> Perrserker
+  [10229, 10230], // Hisuian Growlithe -> Hisuian Arcanine
+  [10109, 10110], // Alolan Geodude -> Alolan Graveler
+  [10110, 10111], // Alolan Graveler -> Alolan Golem
+  [10162, 10163], // Galarian Ponyta -> Galarian Rapidash
+  [10164, 10165], // Galarian Slowpoke -> Galarian Slowbro
+  [10164, 10172], // Galarian Slowpoke -> Galarian Slowking
+  [10166, 865],   // Galarian Farfetch'd -> Sirfetch'd
+  [10112, 10113], // Alolan Grimer -> Alolan Muk
+  [10231, 10232], // Hisuian Voltorb -> Hisuian Electrode
+  [102, 10114],   // Exeggcute -> Alolan Exeggutor
+  [104, 10115],   // Cubone -> Alolan Marowak
+  [109, 10167],   // Koffing -> Galarian Weezing
+  [439, 10168],   // Mime Jr. -> Galarian Mr. Mime
+  [10168, 866],   // Galarian Mr. Mime -> Mr. Rime
+  [156, 10233],   // Quilava -> Hisuian Typhlosion
+  [10253, 980],   // Paldean Wooper -> Clodsire
+  [10234, 904],   // Hisuian Qwilfish -> Overqwil
+  [10235, 903],   // Hisuian Sneasel -> Sneasler
+  [10173, 864],   // Galarian Corsola -> Cursola
+  [10174, 10175], // Galarian Zigzagoon -> Galarian Linoone
+  [10175, 862],   // Galarian Linoone -> Obstagoon
 ];
 
 // The 100 Gen 2 Pokémon (ids 152-251), browsable from the generation switch.
@@ -476,10 +507,18 @@ const LINKED_POKEMON = {
   477: { name: "Dusknoir" },
   478: { name: "Froslass" },
   700: { name: "Sylveon" },
+  862: { name: "Obstagoon" },
+  863: { name: "Perrserker" },
+  864: { name: "Cursola" },
+  865: { name: "Sirfetch'd" },
+  866: { name: "Mr. Rime", speech: "Mister Rime" },
   899: { name: "Wyrdeer" },
   900: { name: "Kleavor" },
   901: { name: "Ursaluna" },
+  903: { name: "Sneasler" },
+  904: { name: "Overqwil" },
   979: { name: "Annihilape" },
+  980: { name: "Clodsire" },
   981: { name: "Farigiraf" },
   982: { name: "Dudunsparce" },
 };
@@ -493,7 +532,7 @@ EVOLUTION_PAIRS.forEach(([from, to]) => {
   EVOLVES_TO[from].push(to);
 });
 
-// --- Mega Evolutions and regional forms ----------------------------------
+// --- Mega Evolutions, Gigantamax, regional forms and Pikachu's caps -------
 // Variants of a Pokémon above rather than Pokémon of their own: they never get
 // a card in the grid or turn up in search, only on their Pokémon's detail page
 // (below the evolutions) and on a page of their own reached from there.
@@ -502,23 +541,43 @@ EVOLUTION_PAIRS.forEach(([from, to]) => {
 // [baseId]: [{ id, kind, name, speech?, types }]
 // - id: PokeAPI's id for the form (10000+), which is also the filename of its
 //   official artwork, so spriteUrl() works unchanged
-// - kind: "mega", or the region the form belongs to (alola, galar, hisui, paldea)
+// - kind: "mega", "gmax", "cap" (Pikachu in one of Ash's caps), or the region
+//   the form belongs to (alola, galar, hisui, paldea)
 // - types: the form's own, since that's often what changed (Alolan Vulpix is Ice)
 //
 // Generated from PokeAPI's species varieties for every id above, leaving out
-// Gigantamax, Totem, Pikachu's caps/costumes and Primal Kyogre/Groudon (not
-// Megas, strictly). Every artwork URL was checked to exist.
+// Totem forms, Pikachu's costumes and Primal Kyogre/Groudon (not Megas,
+// strictly). Every artwork URL was checked to exist.
 const POKEMON_FORMS = {
-  3: [{ id: 10033, kind: "mega", name: "Mega Venusaur", types: ["grass", "poison"] }],
+  3: [
+    { id: 10033, kind: "mega", name: "Mega Venusaur", types: ["grass", "poison"] },
+    { id: 10195, kind: "gmax", name: "Gigantamax Venusaur", types: ["grass", "poison"] },
+  ],
   6: [
     { id: 10034, kind: "mega", name: "Mega Charizard X", types: ["fire", "dragon"] },
     { id: 10035, kind: "mega", name: "Mega Charizard Y", types: ["fire", "flying"] },
+    { id: 10196, kind: "gmax", name: "Gigantamax Charizard", types: ["fire", "flying"] },
   ],
-  9: [{ id: 10036, kind: "mega", name: "Mega Blastoise", types: ["water"] }],
+  9: [
+    { id: 10036, kind: "mega", name: "Mega Blastoise", types: ["water"] },
+    { id: 10197, kind: "gmax", name: "Gigantamax Blastoise", types: ["water"] },
+  ],
+  12: [{ id: 10198, kind: "gmax", name: "Gigantamax Butterfree", types: ["bug", "flying"] }],
   15: [{ id: 10090, kind: "mega", name: "Mega Beedrill", types: ["bug", "poison"] }],
   18: [{ id: 10073, kind: "mega", name: "Mega Pidgeot", types: ["normal", "flying"] }],
   19: [{ id: 10091, kind: "alola", name: "Alolan Rattata", types: ["dark", "normal"] }],
   20: [{ id: 10092, kind: "alola", name: "Alolan Raticate", types: ["dark", "normal"] }],
+  25: [
+    { id: 10199, kind: "gmax", name: "Gigantamax Pikachu", types: ["electric"] },
+    { id: 10094, kind: "cap", name: "Original Cap Pikachu", types: ["electric"] },
+    { id: 10095, kind: "cap", name: "Hoenn Cap Pikachu", types: ["electric"] },
+    { id: 10096, kind: "cap", name: "Sinnoh Cap Pikachu", types: ["electric"] },
+    { id: 10097, kind: "cap", name: "Unova Cap Pikachu", types: ["electric"] },
+    { id: 10098, kind: "cap", name: "Kalos Cap Pikachu", types: ["electric"] },
+    { id: 10099, kind: "cap", name: "Alola Cap Pikachu", types: ["electric"] },
+    { id: 10148, kind: "cap", name: "Partner Cap Pikachu", types: ["electric"] },
+    { id: 10160, kind: "cap", name: "World Cap Pikachu", types: ["electric"] },
+  ],
   26: [
     { id: 10304, kind: "mega", name: "Mega Raichu X", types: ["electric"] },
     { id: 10305, kind: "mega", name: "Mega Raichu Y", types: ["electric"] },
@@ -532,6 +591,7 @@ const POKEMON_FORMS = {
   50: [{ id: 10105, kind: "alola", name: "Alolan Diglett", types: ["ground", "steel"] }],
   51: [{ id: 10106, kind: "alola", name: "Alolan Dugtrio", types: ["ground", "steel"] }],
   52: [
+    { id: 10200, kind: "gmax", name: "Gigantamax Meowth", types: ["normal"] },
     { id: 10107, kind: "alola", name: "Alolan Meowth", types: ["dark"] },
     { id: 10161, kind: "galar", name: "Galarian Meowth", types: ["steel"] },
   ],
@@ -539,6 +599,7 @@ const POKEMON_FORMS = {
   58: [{ id: 10229, kind: "hisui", name: "Hisuian Growlithe", types: ["fire", "rock"] }],
   59: [{ id: 10230, kind: "hisui", name: "Hisuian Arcanine", types: ["fire", "rock"] }],
   65: [{ id: 10037, kind: "mega", name: "Mega Alakazam", types: ["psychic"] }],
+  68: [{ id: 10201, kind: "gmax", name: "Gigantamax Machamp", types: ["fighting"] }],
   71: [{ id: 10279, kind: "mega", name: "Mega Victreebel", types: ["grass", "poison"] }],
   74: [{ id: 10109, kind: "alola", name: "Alolan Geodude", types: ["rock", "electric"] }],
   75: [{ id: 10110, kind: "alola", name: "Alolan Graveler", types: ["rock", "electric"] }],
@@ -553,7 +614,11 @@ const POKEMON_FORMS = {
   83: [{ id: 10166, kind: "galar", name: "Galarian Farfetch'd", types: ["fighting"] }],
   88: [{ id: 10112, kind: "alola", name: "Alolan Grimer", types: ["poison", "dark"] }],
   89: [{ id: 10113, kind: "alola", name: "Alolan Muk", types: ["poison", "dark"] }],
-  94: [{ id: 10038, kind: "mega", name: "Mega Gengar", types: ["ghost", "poison"] }],
+  94: [
+    { id: 10038, kind: "mega", name: "Mega Gengar", types: ["ghost", "poison"] },
+    { id: 10202, kind: "gmax", name: "Gigantamax Gengar", types: ["ghost", "poison"] },
+  ],
+  99: [{ id: 10203, kind: "gmax", name: "Gigantamax Kingler", types: ["water"] }],
   100: [{ id: 10231, kind: "hisui", name: "Hisuian Voltorb", types: ["electric", "grass"] }],
   101: [{ id: 10232, kind: "hisui", name: "Hisuian Electrode", types: ["electric", "grass"] }],
   103: [{ id: 10114, kind: "alola", name: "Alolan Exeggutor", types: ["grass", "dragon"] }],
@@ -569,7 +634,10 @@ const POKEMON_FORMS = {
     { id: 10252, kind: "paldea", name: "Paldean Tauros (Aqua Breed)", types: ["fighting", "water"] },
   ],
   130: [{ id: 10041, kind: "mega", name: "Mega Gyarados", types: ["water", "dark"] }],
+  131: [{ id: 10204, kind: "gmax", name: "Gigantamax Lapras", types: ["water", "ice"] }],
+  133: [{ id: 10205, kind: "gmax", name: "Gigantamax Eevee", types: ["normal"] }],
   142: [{ id: 10042, kind: "mega", name: "Mega Aerodactyl", types: ["rock", "flying"] }],
+  143: [{ id: 10206, kind: "gmax", name: "Gigantamax Snorlax", types: ["normal"] }],
   144: [{ id: 10169, kind: "galar", name: "Galarian Articuno", types: ["psychic", "flying"] }],
   145: [{ id: 10170, kind: "galar", name: "Galarian Zapdos", types: ["fighting", "flying"] }],
   146: [{ id: 10171, kind: "galar", name: "Galarian Moltres", types: ["dark", "flying"] }],
@@ -1079,10 +1147,18 @@ const POKEMON_TYPES = {
   477: ["ghost"],
   478: ["ice", "ghost"],
   700: ["fairy"],
+  862: ["dark", "normal"],
+  863: ["steel"],
+  864: ["ghost"],
+  865: ["fighting"],
+  866: ["ice", "psychic"],
   899: ["normal", "psychic"],
   900: ["bug", "rock"],
   901: ["ground", "normal"],
+  903: ["fighting", "poison"],
+  904: ["dark", "poison"],
   979: ["fighting", "ghost"],
+  980: ["poison", "ground"],
   981: ["normal", "psychic"],
   982: ["normal"],
 };

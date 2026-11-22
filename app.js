@@ -3,7 +3,8 @@
 // Data: Gen 1 names from PokeAPI (cached in localStorage after first load),
 // Gen 2 and 3 names, and evolution relationships from the local lookup tables
 // in data.js; sprites constructed directly from id. Mega Evolutions and
-// regional forms (POKEMON_FORMS) only appear on detail pages, never in the grid.
+// regional forms, Gigantamax and Pikachu's caps (POKEMON_FORMS) only appear on
+// detail pages, never in the grid.
 
 const CACHE_KEY = "pokedex-gen1-list-v1";
 const GEN_KEY = "pokedex-gen";
@@ -318,20 +319,49 @@ function withLinkedPokemon(list) {
     .concat(fromTable(GEN2_POKEMON, 2), fromTable(GEN3_POKEMON, 3), fromTable(LINKED_POKEMON, 0));
 }
 
-// Megas first, right under the evolutions since they read as one more step,
-// then the versions from other regions.
+// The kinds of form, in the order their sections appear: Megas first, right
+// under the evolutions since they read as one more step. `back` heads the card
+// on a form's own page that leads back to the regular Pokémon; regional forms
+// name the regular one's home region instead (see renderFormDetail).
+const FORM_GROUPS = [
+  { group: "mega",     heading: "Mega Evolution", back: "Mega Evolves from" },
+  { group: "gmax",     heading: "Gigantamax",     back: "Regular form" },
+  { group: "regional", heading: "Other regions",  back: null },
+  { group: "cap",      heading: "Ash's caps",     back: "Without a cap" },
+];
+
+// mega, gmax and cap are groups of their own; alola, galar, ... are all "regional".
+function formGroup(form) {
+  return FORM_GROUPS.some(g => g.group === form.kind) ? form.kind : "regional";
+}
+
 function formSectionsHtml(forms) {
-  const megas = forms.filter(form => form.kind === "mega");
-  const regional = forms.filter(form => form.kind !== "mega");
+  return FORM_GROUPS.map(({ group, heading }) => {
+    const inGroup = forms.filter(form => formGroup(form) === group);
+    return inGroup.length ? `
+      <h2 class="evo-heading">${heading}</h2>
+      <div class="evo-row">${inGroup.map(miniCardHtml).join("")}</div>` : "";
+  }).join("");
+}
+
+// Evolutions can lead to or from a form (Pikachu -> Alolan Raichu), and forms
+// aren't in the list, so look in both.
+function findPokemon(list, id) {
+  return list.find(p => p.id === id) || FORM_INFO[id] || null;
+}
+
+function evolutionSectionsHtml(id, list) {
+  const prevo = EVOLVES_FROM[id] ? findPokemon(list, EVOLVES_FROM[id]) : null;
+  const evos = (EVOLVES_TO[id] || []).map(evoId => findPokemon(list, evoId)).filter(Boolean);
   return `
-    ${megas.length ? `
-      <h2 class="evo-heading">Mega Evolution</h2>
-      <div class="evo-row">${megas.map(miniCardHtml).join("")}</div>
+    ${prevo ? `
+      <h2 class="evo-heading">Evolves from</h2>
+      <div class="evo-row">${miniCardHtml(prevo)}</div>
     ` : ""}
 
-    ${regional.length ? `
-      <h2 class="evo-heading">Other regions</h2>
-      <div class="evo-row">${regional.map(miniCardHtml).join("")}</div>
+    ${evos.length ? `
+      <h2 class="evo-heading">Evolves into</h2>
+      <div class="evo-row">${evos.map(miniCardHtml).join("")}</div>
     ` : ""}`;
 }
 
@@ -364,18 +394,20 @@ function wireDetailPage(speech) {
   });
 }
 
-// A Mega or regional form's own page: its artwork, name and types, then the way
-// back to the regular Pokémon and the other forms of the same kind. The regular
-// Pokémon's move, evolutions and episode stay off, because they aren't the
-// form's (Galarian Meowth doesn't evolve into Persian).
+// A form's own page: its artwork, name and types, its own evolutions (Alolan
+// Diglett -> Alolan Dugtrio), then the way back to the regular Pokémon and the
+// other forms of the same kind. The regular Pokémon's move, evolutions and
+// episode stay off, because they aren't the form's (Galarian Meowth evolves
+// into Perrserker, not Persian).
 function renderFormDetail(form, list) {
   const base = list.find(p => p.id === form.baseId);
-  const isMega = form.kind === "mega";
+  const group = formGroup(form);
   // Only siblings of the same kind: Mega Raichu comes from Kanto Raichu, so it
   // has no place on Alolan Raichu's page.
   const siblings = POKEMON_FORMS[form.baseId]
-    .filter(other => other.id !== form.id && (other.kind === "mega") === isMega);
-  const baseHeading = isMega ? "Mega Evolves from" : `${HOME_REGIONS[base && base.gen] || "Regular"} form`;
+    .filter(other => other.id !== form.id && formGroup(other) === group);
+  const baseHeading = FORM_GROUPS.find(g => g.group === group).back
+    || `${HOME_REGIONS[base && base.gen] || "Regular"} form`;
 
   app.innerHTML = `
     <button class="back-button" id="backBtn">← Back to all Pokémon</button>
@@ -383,6 +415,8 @@ function renderFormDetail(form, list) {
       ${detailHeaderHtml(form.id, form.name)}
 
       ${typeRowHtml(form.types)}
+
+      ${evolutionSectionsHtml(form.id, list)}
 
       ${base ? `
         <h2 class="evo-heading">${baseHeading}</h2>
@@ -413,9 +447,6 @@ function renderDetail(id, gen1List) {
     return;
   }
 
-  const prevo = EVOLVES_FROM[id] ? list.find(p => p.id === EVOLVES_FROM[id]) : null;
-  const evos = (EVOLVES_TO[id] || []).map(evoId => list.find(p => p.id === evoId)).filter(Boolean);
-
   app.innerHTML = `
     <button class="back-button" id="backBtn">← Back to all Pokémon</button>
     <div class="detail">
@@ -424,15 +455,7 @@ function renderDetail(id, gen1List) {
       ${typeRowHtml(POKEMON_TYPES[id])}
       ${moveSectionHtml(id)}
 
-      ${prevo ? `
-        <h2 class="evo-heading">Evolves from</h2>
-        <div class="evo-row">${miniCardHtml(prevo)}</div>
-      ` : ""}
-
-      ${evos.length ? `
-        <h2 class="evo-heading">Evolves into</h2>
-        <div class="evo-row">${evos.map(miniCardHtml).join("")}</div>
-      ` : ""}
+      ${evolutionSectionsHtml(id, list)}
 
       ${formSectionsHtml(POKEMON_FORMS[id] || [])}
 
