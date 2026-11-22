@@ -2,7 +2,8 @@
 // switch at the top to browse the 100 Gen 2 or 135 Gen 3 Pokémon instead.
 // Data: Gen 1 names from PokeAPI (cached in localStorage after first load),
 // Gen 2 and 3 names, and evolution relationships from the local lookup tables
-// in data.js; sprites constructed directly from id.
+// in data.js; sprites constructed directly from id. Mega Evolutions and
+// regional forms (POKEMON_FORMS) only appear on detail pages, never in the grid.
 
 const CACHE_KEY = "pokedex-gen1-list-v1";
 const GEN_KEY = "pokedex-gen";
@@ -248,8 +249,7 @@ function miniCardHtml(pokemon) {
     </div>`;
 }
 
-function typeRowHtml(id) {
-  const types = POKEMON_TYPES[id];
+function typeRowHtml(types) {
   if (!types) return "";
   return `
     <div class="type-row">
@@ -318,14 +318,92 @@ function withLinkedPokemon(list) {
     .concat(fromTable(GEN2_POKEMON, 2), fromTable(GEN3_POKEMON, 3), fromTable(LINKED_POKEMON, 0));
 }
 
+// Megas first, right under the evolutions since they read as one more step,
+// then the versions from other regions.
+function formSectionsHtml(forms) {
+  const megas = forms.filter(form => form.kind === "mega");
+  const regional = forms.filter(form => form.kind !== "mega");
+  return `
+    ${megas.length ? `
+      <h2 class="evo-heading">Mega Evolution</h2>
+      <div class="evo-row">${megas.map(miniCardHtml).join("")}</div>
+    ` : ""}
+
+    ${regional.length ? `
+      <h2 class="evo-heading">Other regions</h2>
+      <div class="evo-row">${regional.map(miniCardHtml).join("")}</div>
+    ` : ""}`;
+}
+
+// The region a generation's Pokémon come from, for the heading that leads from
+// "Alolan Vulpix" back to the Vulpix he already knows.
+const HOME_REGIONS = { 1: "Kanto", 2: "Johto", 3: "Hoenn" };
+
 // Shown on the generation buttons, for a reader who goes by pictures:
 // Pikachu for Gen 1, Chikorita for Gen 2, Treecko for Gen 3.
 const GEN_ICONS = { 1: 25, 2: 152, 3: 252 };
 const GENS = [1, 2, 3];
 
+function detailHeaderHtml(id, name) {
+  return `
+    <img class="detail-image" src="${spriteUrl(id)}" alt="${name}">
+    <div class="detail-name">${name}</div>
+    <button class="speak-button large" id="detailSpeakBtn" aria-label="Speak ${name}">🔊</button>`;
+}
+
+// The listeners every detail page needs; the move stage wires up its own.
+function wireDetailPage(speech) {
+  document.getElementById("backBtn").addEventListener("click", () => { location.hash = "#/"; });
+  document.getElementById("detailSpeakBtn").addEventListener("click", () => speak(speech));
+
+  app.querySelectorAll("[data-speak]").forEach(el => {
+    el.addEventListener("click", () => speak(el.dataset.speak));
+  });
+  app.querySelectorAll(".mini-card").forEach(el => {
+    el.addEventListener("click", () => { location.hash = `#/pokemon/${el.dataset.id}`; });
+  });
+}
+
+// A Mega or regional form's own page: its artwork, name and types, then the way
+// back to the regular Pokémon and the other forms of the same kind. The regular
+// Pokémon's move, evolutions and episode stay off, because they aren't the
+// form's (Galarian Meowth doesn't evolve into Persian).
+function renderFormDetail(form, list) {
+  const base = list.find(p => p.id === form.baseId);
+  const isMega = form.kind === "mega";
+  // Only siblings of the same kind: Mega Raichu comes from Kanto Raichu, so it
+  // has no place on Alolan Raichu's page.
+  const siblings = POKEMON_FORMS[form.baseId]
+    .filter(other => other.id !== form.id && (other.kind === "mega") === isMega);
+  const baseHeading = isMega ? "Mega Evolves from" : `${HOME_REGIONS[base && base.gen] || "Regular"} form`;
+
+  app.innerHTML = `
+    <button class="back-button" id="backBtn">← Back to all Pokémon</button>
+    <div class="detail">
+      ${detailHeaderHtml(form.id, form.name)}
+
+      ${typeRowHtml(form.types)}
+
+      ${base ? `
+        <h2 class="evo-heading">${baseHeading}</h2>
+        <div class="evo-row">${miniCardHtml(base)}</div>
+      ` : ""}
+
+      ${formSectionsHtml(siblings)}
+    </div>
+  `;
+
+  wireDetailPage(form.speech || form.name);
+}
+
 function renderDetail(id, gen1List) {
   const list = withLinkedPokemon(gen1List);
   const pokemon = list.find(p => p.id === id);
+
+  if (!pokemon && FORM_INFO[id]) {
+    renderFormDetail(FORM_INFO[id], list);
+    return;
+  }
 
   if (!pokemon) {
     app.innerHTML = `
@@ -341,11 +419,9 @@ function renderDetail(id, gen1List) {
   app.innerHTML = `
     <button class="back-button" id="backBtn">← Back to all Pokémon</button>
     <div class="detail">
-      <img class="detail-image" src="${spriteUrl(pokemon.id)}" alt="${pokemon.name}">
-      <div class="detail-name">${pokemon.name}</div>
-      <button class="speak-button large" id="detailSpeakBtn" aria-label="Speak ${pokemon.name}">🔊</button>
+      ${detailHeaderHtml(pokemon.id, pokemon.name)}
 
-      ${typeRowHtml(id)}
+      ${typeRowHtml(POKEMON_TYPES[id])}
       ${moveSectionHtml(id)}
 
       ${prevo ? `
@@ -358,16 +434,13 @@ function renderDetail(id, gen1List) {
         <div class="evo-row">${evos.map(miniCardHtml).join("")}</div>
       ` : ""}
 
+      ${formSectionsHtml(POKEMON_FORMS[id] || [])}
+
       ${episodeSectionHtml(id)}
     </div>
   `;
 
-  document.getElementById("backBtn").addEventListener("click", () => { location.hash = "#/"; });
-  document.getElementById("detailSpeakBtn").addEventListener("click", () => speak(pokemon.speech));
-
-  app.querySelectorAll("[data-speak]").forEach(el => {
-    el.addEventListener("click", () => speak(el.dataset.speak));
-  });
+  wireDetailPage(pokemon.speech);
 
   const stage = document.getElementById("moveStage");
   if (stage) {
@@ -380,9 +453,6 @@ function renderDetail(id, gen1List) {
     stage.addEventListener("click", replay);
     document.getElementById("moveBtn").addEventListener("click", replay);
   }
-  app.querySelectorAll(".mini-card").forEach(el => {
-    el.addEventListener("click", () => { location.hash = `#/pokemon/${el.dataset.id}`; });
-  });
 }
 
 let pokemonList = [];

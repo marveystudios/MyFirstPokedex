@@ -3,7 +3,8 @@
 // simple hyphen-splitting, and the
 // evolution/prevolution relationships (hardcoded rather than fetched from
 // PokeAPI's evolution-chain endpoint — Gen 1 lines are fixed and well-known,
-// and this avoids ~150 extra API calls plus branching-chain parsing).
+// and this avoids ~150 extra API calls plus branching-chain parsing). Also the
+// Mega Evolutions and regional forms (Alolan, Galarian, ...) of those Pokémon.
 
 // [id]: { display, speech }
 // - display: shown on screen
@@ -490,6 +491,142 @@ EVOLUTION_PAIRS.forEach(([from, to]) => {
   EVOLVES_FROM[to] = from;
   if (!EVOLVES_TO[from]) EVOLVES_TO[from] = [];
   EVOLVES_TO[from].push(to);
+});
+
+// --- Mega Evolutions and regional forms ----------------------------------
+// Variants of a Pokémon above rather than Pokémon of their own: they never get
+// a card in the grid or turn up in search, only on their Pokémon's detail page
+// (below the evolutions) and on a page of their own reached from there.
+// Includes the Megas added in Legends: Z-A and its Mega Dimension DLC.
+//
+// [baseId]: [{ id, kind, name, speech?, types }]
+// - id: PokeAPI's id for the form (10000+), which is also the filename of its
+//   official artwork, so spriteUrl() works unchanged
+// - kind: "mega", or the region the form belongs to (alola, galar, hisui, paldea)
+// - types: the form's own, since that's often what changed (Alolan Vulpix is Ice)
+//
+// Generated from PokeAPI's species varieties for every id above, leaving out
+// Gigantamax, Totem, Pikachu's caps/costumes and Primal Kyogre/Groudon (not
+// Megas, strictly). Every artwork URL was checked to exist.
+const POKEMON_FORMS = {
+  3: [{ id: 10033, kind: "mega", name: "Mega Venusaur", types: ["grass", "poison"] }],
+  6: [
+    { id: 10034, kind: "mega", name: "Mega Charizard X", types: ["fire", "dragon"] },
+    { id: 10035, kind: "mega", name: "Mega Charizard Y", types: ["fire", "flying"] },
+  ],
+  9: [{ id: 10036, kind: "mega", name: "Mega Blastoise", types: ["water"] }],
+  15: [{ id: 10090, kind: "mega", name: "Mega Beedrill", types: ["bug", "poison"] }],
+  18: [{ id: 10073, kind: "mega", name: "Mega Pidgeot", types: ["normal", "flying"] }],
+  19: [{ id: 10091, kind: "alola", name: "Alolan Rattata", types: ["dark", "normal"] }],
+  20: [{ id: 10092, kind: "alola", name: "Alolan Raticate", types: ["dark", "normal"] }],
+  26: [
+    { id: 10304, kind: "mega", name: "Mega Raichu X", types: ["electric"] },
+    { id: 10305, kind: "mega", name: "Mega Raichu Y", types: ["electric"] },
+    { id: 10100, kind: "alola", name: "Alolan Raichu", types: ["electric", "psychic"] },
+  ],
+  27: [{ id: 10101, kind: "alola", name: "Alolan Sandshrew", types: ["ice", "steel"] }],
+  28: [{ id: 10102, kind: "alola", name: "Alolan Sandslash", types: ["ice", "steel"] }],
+  36: [{ id: 10278, kind: "mega", name: "Mega Clefable", types: ["fairy", "flying"] }],
+  37: [{ id: 10103, kind: "alola", name: "Alolan Vulpix", types: ["ice"] }],
+  38: [{ id: 10104, kind: "alola", name: "Alolan Ninetales", types: ["ice", "fairy"] }],
+  50: [{ id: 10105, kind: "alola", name: "Alolan Diglett", types: ["ground", "steel"] }],
+  51: [{ id: 10106, kind: "alola", name: "Alolan Dugtrio", types: ["ground", "steel"] }],
+  52: [
+    { id: 10107, kind: "alola", name: "Alolan Meowth", types: ["dark"] },
+    { id: 10161, kind: "galar", name: "Galarian Meowth", types: ["steel"] },
+  ],
+  53: [{ id: 10108, kind: "alola", name: "Alolan Persian", types: ["dark"] }],
+  58: [{ id: 10229, kind: "hisui", name: "Hisuian Growlithe", types: ["fire", "rock"] }],
+  59: [{ id: 10230, kind: "hisui", name: "Hisuian Arcanine", types: ["fire", "rock"] }],
+  65: [{ id: 10037, kind: "mega", name: "Mega Alakazam", types: ["psychic"] }],
+  71: [{ id: 10279, kind: "mega", name: "Mega Victreebel", types: ["grass", "poison"] }],
+  74: [{ id: 10109, kind: "alola", name: "Alolan Geodude", types: ["rock", "electric"] }],
+  75: [{ id: 10110, kind: "alola", name: "Alolan Graveler", types: ["rock", "electric"] }],
+  76: [{ id: 10111, kind: "alola", name: "Alolan Golem", types: ["rock", "electric"] }],
+  77: [{ id: 10162, kind: "galar", name: "Galarian Ponyta", types: ["psychic"] }],
+  78: [{ id: 10163, kind: "galar", name: "Galarian Rapidash", types: ["psychic", "fairy"] }],
+  79: [{ id: 10164, kind: "galar", name: "Galarian Slowpoke", types: ["psychic"] }],
+  80: [
+    { id: 10071, kind: "mega", name: "Mega Slowbro", types: ["water", "psychic"] },
+    { id: 10165, kind: "galar", name: "Galarian Slowbro", types: ["poison", "psychic"] },
+  ],
+  83: [{ id: 10166, kind: "galar", name: "Galarian Farfetch'd", types: ["fighting"] }],
+  88: [{ id: 10112, kind: "alola", name: "Alolan Grimer", types: ["poison", "dark"] }],
+  89: [{ id: 10113, kind: "alola", name: "Alolan Muk", types: ["poison", "dark"] }],
+  94: [{ id: 10038, kind: "mega", name: "Mega Gengar", types: ["ghost", "poison"] }],
+  100: [{ id: 10231, kind: "hisui", name: "Hisuian Voltorb", types: ["electric", "grass"] }],
+  101: [{ id: 10232, kind: "hisui", name: "Hisuian Electrode", types: ["electric", "grass"] }],
+  103: [{ id: 10114, kind: "alola", name: "Alolan Exeggutor", types: ["grass", "dragon"] }],
+  105: [{ id: 10115, kind: "alola", name: "Alolan Marowak", types: ["fire", "ghost"] }],
+  110: [{ id: 10167, kind: "galar", name: "Galarian Weezing", types: ["poison", "fairy"] }],
+  115: [{ id: 10039, kind: "mega", name: "Mega Kangaskhan", types: ["normal"] }],
+  121: [{ id: 10280, kind: "mega", name: "Mega Starmie", types: ["water", "psychic"] }],
+  122: [{ id: 10168, kind: "galar", name: "Galarian Mr. Mime", speech: "Galarian Mister Mime", types: ["ice", "psychic"] }],
+  127: [{ id: 10040, kind: "mega", name: "Mega Pinsir", types: ["bug", "flying"] }],
+  128: [
+    { id: 10250, kind: "paldea", name: "Paldean Tauros (Combat Breed)", types: ["fighting"] },
+    { id: 10251, kind: "paldea", name: "Paldean Tauros (Blaze Breed)", types: ["fighting", "fire"] },
+    { id: 10252, kind: "paldea", name: "Paldean Tauros (Aqua Breed)", types: ["fighting", "water"] },
+  ],
+  130: [{ id: 10041, kind: "mega", name: "Mega Gyarados", types: ["water", "dark"] }],
+  142: [{ id: 10042, kind: "mega", name: "Mega Aerodactyl", types: ["rock", "flying"] }],
+  144: [{ id: 10169, kind: "galar", name: "Galarian Articuno", types: ["psychic", "flying"] }],
+  145: [{ id: 10170, kind: "galar", name: "Galarian Zapdos", types: ["fighting", "flying"] }],
+  146: [{ id: 10171, kind: "galar", name: "Galarian Moltres", types: ["dark", "flying"] }],
+  149: [{ id: 10281, kind: "mega", name: "Mega Dragonite", types: ["dragon", "flying"] }],
+  150: [
+    { id: 10043, kind: "mega", name: "Mega Mewtwo X", types: ["psychic", "fighting"] },
+    { id: 10044, kind: "mega", name: "Mega Mewtwo Y", types: ["psychic"] },
+  ],
+  154: [{ id: 10282, kind: "mega", name: "Mega Meganium", types: ["grass", "fairy"] }],
+  157: [{ id: 10233, kind: "hisui", name: "Hisuian Typhlosion", types: ["fire", "ghost"] }],
+  160: [{ id: 10283, kind: "mega", name: "Mega Feraligatr", types: ["water", "dragon"] }],
+  181: [{ id: 10045, kind: "mega", name: "Mega Ampharos", types: ["electric", "dragon"] }],
+  194: [{ id: 10253, kind: "paldea", name: "Paldean Wooper", types: ["poison", "ground"] }],
+  199: [{ id: 10172, kind: "galar", name: "Galarian Slowking", types: ["poison", "psychic"] }],
+  208: [{ id: 10072, kind: "mega", name: "Mega Steelix", types: ["steel", "ground"] }],
+  211: [{ id: 10234, kind: "hisui", name: "Hisuian Qwilfish", types: ["dark", "poison"] }],
+  212: [{ id: 10046, kind: "mega", name: "Mega Scizor", types: ["bug", "steel"] }],
+  214: [{ id: 10047, kind: "mega", name: "Mega Heracross", types: ["bug", "fighting"] }],
+  215: [{ id: 10235, kind: "hisui", name: "Hisuian Sneasel", types: ["fighting", "poison"] }],
+  222: [{ id: 10173, kind: "galar", name: "Galarian Corsola", types: ["ghost"] }],
+  227: [{ id: 10284, kind: "mega", name: "Mega Skarmory", types: ["steel", "flying"] }],
+  229: [{ id: 10048, kind: "mega", name: "Mega Houndoom", types: ["dark", "fire"] }],
+  248: [{ id: 10049, kind: "mega", name: "Mega Tyranitar", types: ["rock", "dark"] }],
+  254: [{ id: 10065, kind: "mega", name: "Mega Sceptile", types: ["grass", "dragon"] }],
+  257: [{ id: 10050, kind: "mega", name: "Mega Blaziken", types: ["fire", "fighting"] }],
+  260: [{ id: 10064, kind: "mega", name: "Mega Swampert", types: ["water", "ground"] }],
+  263: [{ id: 10174, kind: "galar", name: "Galarian Zigzagoon", types: ["dark", "normal"] }],
+  264: [{ id: 10175, kind: "galar", name: "Galarian Linoone", types: ["dark", "normal"] }],
+  282: [{ id: 10051, kind: "mega", name: "Mega Gardevoir", types: ["psychic", "fairy"] }],
+  302: [{ id: 10066, kind: "mega", name: "Mega Sableye", types: ["dark", "ghost"] }],
+  303: [{ id: 10052, kind: "mega", name: "Mega Mawile", types: ["steel", "fairy"] }],
+  306: [{ id: 10053, kind: "mega", name: "Mega Aggron", types: ["steel"] }],
+  308: [{ id: 10054, kind: "mega", name: "Mega Medicham", types: ["fighting", "psychic"] }],
+  310: [{ id: 10055, kind: "mega", name: "Mega Manectric", types: ["electric"] }],
+  319: [{ id: 10070, kind: "mega", name: "Mega Sharpedo", types: ["water", "dark"] }],
+  323: [{ id: 10087, kind: "mega", name: "Mega Camerupt", types: ["fire", "ground"] }],
+  334: [{ id: 10067, kind: "mega", name: "Mega Altaria", types: ["dragon", "fairy"] }],
+  354: [{ id: 10056, kind: "mega", name: "Mega Banette", types: ["ghost"] }],
+  358: [{ id: 10306, kind: "mega", name: "Mega Chimecho", types: ["psychic", "steel"] }],
+  359: [
+    { id: 10057, kind: "mega", name: "Mega Absol", types: ["dark"] },
+    { id: 10307, kind: "mega", name: "Mega Absol Z", types: ["dark", "ghost"] },
+  ],
+  362: [{ id: 10074, kind: "mega", name: "Mega Glalie", types: ["ice"] }],
+  373: [{ id: 10089, kind: "mega", name: "Mega Salamence", types: ["dragon", "flying"] }],
+  376: [{ id: 10076, kind: "mega", name: "Mega Metagross", types: ["steel", "psychic"] }],
+  380: [{ id: 10062, kind: "mega", name: "Mega Latias", types: ["dragon", "psychic"] }],
+  381: [{ id: 10063, kind: "mega", name: "Mega Latios", types: ["dragon", "psychic"] }],
+  384: [{ id: 10079, kind: "mega", name: "Mega Rayquaza", types: ["dragon", "flying"] }],
+  475: [{ id: 10068, kind: "mega", name: "Mega Gallade", types: ["psychic", "fighting"] }],
+  478: [{ id: 10285, kind: "mega", name: "Mega Froslass", types: ["ice", "ghost"] }],
+};
+
+// Built once, at load: formId -> the form, plus the id of the Pokémon it belongs to.
+const FORM_INFO = {};
+Object.entries(POKEMON_FORMS).forEach(([baseId, forms]) => {
+  forms.forEach(form => { FORM_INFO[form.id] = { ...form, baseId: parseInt(baseId, 10) }; });
 });
 
 // --- Types ---------------------------------------------------------------
